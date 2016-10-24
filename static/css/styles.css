@@ -1,0 +1,279 @@
+:root {
+  --gray: #34495E;
+  --dark: #2E4154;
+  --light: #485B6E;
+  --pop: #2ECC71;
+  --text: #ECF0F1;
+}
+
+.text-pop {
+    color: var(--pop)
+}
+
+body {
+    overflow-x: hidden;
+    position: relative;
+}
+
+table {
+    margin: 0 auto;
+}
+
+::selection {
+  background: var(--text);
+}
+
+html *
+{
+  font-size: 16px;
+  color: var(--text);
+  background: var(--gray);
+  font-family: 'Lato', sans-serif;
+  border: none;
+  border-radius: 4px;
+  outline: none;
+}
+
+#container {
+  width: 100%;
+  padding-top: 100px;
+  margin: 0 auto;
+}
+
+h1 {
+  text-align: center;
+  font-size: 32px;
+}
+
+form {
+  display: table;
+  margin: 0 auto;
+}
+
+th {
+  padding: 4px;
+  text-align: left;
+  background: var(--light);
+  margin: 0 auto;
+}
+
+td {
+  padding: 4px;
+  text-align: left;
+  margin: 0 auto;
+  background: var(--gray);
+  border-spacing: 0;
+}
+
+a, a:visited, a:hover, a:focus, a:active {
+  text-decoration: none;
+  color: var(--text);
+}
+
+/*#footer {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  //text-align: center;
+  height: 20px;
+}*/
+
+
+
+ul.nav {
+    width:100%;
+    margin:0 auto;
+    padding:0;
+    list-style:none;
+    text-align:center;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+}
+.nav li { 
+    display:inline-block;
+    width:32%;
+    margin:0;
+    padding:0;
+}
+.nav a {
+    text-align:center;
+    margin:0;
+    display:block;
+}
+ul.nav li:first-child a{
+    border:none;
+}
+ul.nav li:last-child a {
+    border:none;
+}
+
+
+input[type=text] {
+  width: 180px;
+  background: var(--dark);
+  text-align: center;
+  padding: 4px;
+  font-size: 14px;
+}
+
+input[type=text]:focus, input[type="radio"]:checked + label {
+  background: var(--light);
+}
+
+input[type="radio"] {
+  display: none;
+}
+
+label {
+  display:inline-block;
+  width: 86px;
+  text-align: center;
+  padding: 4px;
+  font-size: 14px;
+}
+
+#button {
+  display:inline-block;
+  width: 188px;
+  text-align: center;
+  padding: 4px;
+  font-size: 14px;
+}
+
+#button:hover, input[type="radio"]:hover:not(:checked) + label, tr.weapon:hover {
+  animation: gray-light .5s forwards;
+}
+
+#button:not(:hover), input[type="radio"]:not(:hover):not(:checked) + label, tr.weapon:not(:hover) {
+  animation: light-gray .5s forwards;
+}
+
+input[type="text"]:hover {
+  animation: dark-light .5s forwards;
+}
+
+input[type="text"]:not(:hover):not(:focus) {
+  animation: light-dark .5s forwards;
+}
+
+#display {
+  display: table;
+  margin: 0 auto;
+}
+
+@keyframes light-dark {
+    from {background-color: var(--light);}
+    to {background-color: var(--dark);}
+}
+
+@keyframes dark-light {
+    from {background-color: var(--dark);}
+    to {background-color: var(--light);}
+}
+
+@keyframes gray-light {
+    from {background-color: var(--gray);}
+    to {background-color: var(--light);}
+}
+
+@keyframes light-gray{
+    from {background-color: var(--light);}
+    to {background-color: var(--gray);}
+}
+
+
+
+::-webkit-scrollbar {
+  width: 16px;
+  height: 16px;
+}
+
+::-webkit-scrollbar-button {
+  width: 0;
+  height: 0;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--dark);
+  border-radius: 100px;
+}
+
+::-webkit-scrollbar-thumb:hover, ::-webkit-scrollbar-thumb:active {
+  background: var(--light);
+}
+
+::-webkit-scrollbar-track {
+  border-radius: 100px;
+}
+
+/*codepen.io/wzhow/pen/MwqjZE*/
+
+.pa {
+  font-size:0;
+  text-align:center;
+  position: relative;
+  width: 40px;
+  height: 40px;
+  left:calc(50% - 40px / 2);
+  top:calc(50% - 40px / 2);
+}
+
+.line-scale  .pa div,
+.line-scale-pulse-out  .pa div,
+.line-scale-pulse-out-rapid  .pa div,
+.line-scale-party  .pa div {
+  width: 4px;
+  height: 40px;
+  background: var(--text);
+  display:inline-block;
+  margin:0 2px;
+  border-radius:2px;
+}
+.line-scale  .pa div {
+  animation:line-scale 1s linear infinite;
+}
+
+.line-scale .pa div:nth-child(2) {
+  animation-delay:-0.9s
+}
+.line-scale .pa div:nth-child(3) {
+  animation-delay:-0.8s
+}
+.line-scale .pa div:nth-child(4) {
+  animation-delay:-0.7s
+}
+.line-scale .pa div:last-child {
+  animation-delay:-0.6s;
+}
+
+@keyframes line-scale{
+  0%,15%,85%,100% {
+   transform:scaleY(.4)
+  }
+  35%,66% {
+   transform:scaleY(1)
+  }
+}
+
+.line-scale-pulse-out  .pa div {
+  animation:line-scale-pulse-out .8s linear infinite;
+}
+.line-scale-pulse-out .pa div:nth-child(2),
+.line-scale-pulse-out .pa div:nth-child(4) {
+  animation-delay:-0.6s
+}
+.line-scale-pulse-out .pa div:nth-child(1),
+.line-scale-pulse-out .pa div:nth-child(5) {
+  animation-delay:-0.4s
+}
+
+@keyframes line-scale-pulse-out {
+  0%,100% {
+   transform:scaleY(.4)
+  }
+  50% {
+   transform:scaleY(1)
+  }
+}
