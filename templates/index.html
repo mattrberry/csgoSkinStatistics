@@ -7,10 +7,37 @@
 
     <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
     <link type="text/css" rel="stylesheet" href="static/css/styles.css" media="screen"/>
-    <title>CSGO.sh Redux</title>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+    <script src="static/js/post.js" type="text/javascript"></script>
+
+    <title>CSGO Skin Stats</title>
   </head>
 
   <body>
-    {{ info_location }}
+    <div id="container">
+      <h1 style="cursor:default">CSGO Skin Stats</h1>
+    </div>
+    
+    <form id="input" name="input" method="post" autocomplete="off">
+      <input type="text" id="textbox" name="id" placeholder="Profile URL or Inspect Link" onClick="this.select();" accesskey="n" title="Enter profile URL, inspect link, vanity URL, or SteamID64 to search. Use Alt-N on Windows or Ctrl-Alt-N on Mac to focus on input.">
+      <br>
+      <input style="cursor:pointer" id="button" type="button" value="Check">
+    </form>
+    
+    <br>
+    
+    <div class="loader line-scale-pulse-out" id="loading" style="display: none;">
+      <div class="pa">
+	<div></div>
+	<div></div>
+	<div></div>
+	<div></div>
+	<div></div>
+      </div>
+    </div>
+    
+    <div id="display"> {{ info_location }} </div>
   </body>
 </html>
