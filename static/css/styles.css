@@ -109,6 +109,9 @@ ul.nav li:last-child a {
     border:none;
 }
 
+input[type=button] {
+    -webkit-appearance: none;
+}
 
 input[type=text] {
   width: 180px;
