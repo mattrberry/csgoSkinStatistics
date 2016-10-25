@@ -83,38 +83,29 @@ def main(steamid):
 
             special = ""
 
-            if pattern == "Fade":
-                if itemName == "Karambit":
-                    special = patternDB["karambit"]["fade"][paintIndex] + "%"
-                elif itemName == "Flip Knife":
-                    special = patternDB["flip"]["fade"][paintIndex] + "%"
-                elif itemName == "M9 Bayonet":
-                    special = patternDB["m9"]["fade"][paintIndex] + "%"
-            elif pattern == "Marble Fade":
-                if itemName == "Karambit":
-                    special = patternDB["karambit"]["marble"][paintIndex]
-                elif itemName == "Bayonet" or itemName == "Gut Knife":
-                    special = patternDB["bayonet"]["marble"][paintIndex]
-                elif itemName == "Flip Knife":
-                    special = patternDB["flip"]["marble"][paintIndex]
-            elif pattern == "Doppler" or pattern == "Gamma Doppler":
-                if patternIndex == 415:
-                    special = "Ruby"
-                elif patternIndex == 416:
-                    special = "Sapphire"
-                elif patternIndex == 417:
-                    special = "Black Pearl"
-                elif patternIndex == 418 or patternIndex == 569:
-                    special = "Phase 1"
-                elif patternIndex == 419 or patternIndex == 570:
-                    special = "Phase 2"
-                elif patternIndex == 420 or patternIndex == 571:
-                    special = "Plase 3"
-                elif patternIndex == 421 or patternIndex == 572:
-                    special = "Phase 4"
-                elif patternIndex == 568:
-                    special = "Emerald"
-
+            try:
+                if pattern == "Fade" or pattern == "Marble Fade":
+                    special = patternDB[itemName][pattern][paintIndex]
+                elif pattern == "Doppler" or pattern == "Gamma Doppler":
+                    if patternIndex == 415:
+                        special = "Ruby"
+                    elif patternIndex == 416:
+                        special = "Sapphire"
+                    elif patternIndex == 417:
+                        special = "Black Pearl"
+                    elif patternIndex == 418 or patternIndex == 569:
+                        special = "Phase 1"
+                    elif patternIndex == 419 or patternIndex == 570:
+                        special = "Phase 2"
+                    elif patternIndex == 420 or patternIndex == 571:
+                        special = "Plase 3"
+                    elif patternIndex == 421 or patternIndex == 572:
+                        special = "Phase 4"
+                    elif patternIndex == 568:
+                        special = "Emerald"
+            except:
+                pass
+            
             for attribute in item["attributes"]:
                 if attribute["defindex"] == 81:
                     itemName = ("<span class=\"pop\">StatTrak</span> " +
@@ -156,7 +147,7 @@ def outputWeapon(weapons):
 
     for weapon in weapons:
         weaponString += ("<tr><td>" + weapon[0] + " | " + weapon[1] +
-                         "<sup><span style=\"font-size:12px\" class=\"pop\">" +
+                         "<sup><span style=\"font-size:12px\" class=\"pop\"> " +
                          weapon[2] + "</span></sup></td>" +
                          "<td>" + "{0:.12f}".format(weapon[3]) + "</td></tr>")
 
