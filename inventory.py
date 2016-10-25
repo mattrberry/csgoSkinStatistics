@@ -1,26 +1,51 @@
 import requests, json, math
-#from cache import itemDB, skinDB, patternDB
-from flask import Flask, render_template, Markup
+from flask import Flask, render_template, Markup, request
 import time
+
+with open('../steam_api_key') as f:
+    apikey = f.read().strip()
+      
 
 app = Flask(__name__)
 
+@app.route('/displayInventory', methods=["POST"])
+def displayInventory():
+    userinput  = request.form['input']
+    steamid    = request.form['id']
+    itemid     = request.form['itemid']
+
+    response = main(convertID(str(steamid)))
+    return response
+    
+def convertID(steamid):
+    if not steamid.isdigit():
+        url = "http://api.steampowered.com/ISteamUser/ResolveVanityURL/v0001/?key=" + apikey + "&vanityurl=" + steamid
+        response = requests.get(url)
+        steamid = json.loads(response.text)['response']['steamid']
+    return steamid
+        
 @app.route('/')
 def home():
+    return render_template('index.html', info_location="")
+
+def main(steamid):
     timeStart = time.time()
     
     #steamid = str(76561198261551396)    # mattrb
-    steamid = str(76561197972331023)     # lololguardian
+    #steamid = str(76561197972331023)    # lololguardian
 
     with open('../steam_api_key') as f:
         apikey = f.read().strip()
 
     url = "http://api.steampowered.com/IEconItems_730/GetPlayerItems/v0001/?key=" + apikey + "&SteamID=" + steamid
 
+    steamAPIcalls = 0
     while True:
         response = requests.get(url)
         if response.text != "{\n\n}":
             break
+        elif steamAPIcalls >= 50:
+            return "Tell Steam to fix their fucking API"
 
     playerItems = json.loads(response.text)
 
@@ -101,13 +126,14 @@ def home():
             else:
                 keys[itemName] = 1
 
-    timeTotal = time.time() - timeStart
-
-    loadTimeHTML = "<div style=\"text-align:center\">" + "Loaded in " + str(round(timeTotal,2)) + " seconds" + "</div>"
+    # timeTotal = time.time() - timeStart
+    # loadTimeHTML = "<div style=\"text-align:center\">" + "Loaded in " + str(round(timeTotal,2)) + " seconds" + "</div>"
     
-    output = Markup("<table>" + convertSkinString(skins) + convertKeyString(keys) + "</table>" + loadTimeHTML)
-    return render_template('index.html', info_location=output), 200
+    #output = Markup("<table>" + convertSkinString(skins) + convertKeyString(keys) + "</table>" + loadTimeHTML)
+    # return render_template('index.html', info_location=output), 200
 
+    return ("<table>" + convertSkinString(skins) + convertKeyString(keys) + "</table>")
+    
 def convertSkinString(skns):
     skinString = ""
 
