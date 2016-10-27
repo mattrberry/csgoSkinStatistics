@@ -53,7 +53,6 @@ $(document).ready(function() {
 	    document.getElementById('display').innerHTML = data;
 	    
 	    $("#display").append("<div style=\"text-align:center;\">Loaded in " + loadTime + " seconds</div>");
-	    //$("#display").append("<div style=\"text-align:center;\"><a tabindex=\"-1\" target=\"_blank\" href=\"https://steamcommunity.com/tradeoffer/new/?partner=301285668&token=yWbzVo_6\" style=\"color:#01B7A6\">Donate :)</a></div>");
 	}
 	
 	var start = performance.now();
