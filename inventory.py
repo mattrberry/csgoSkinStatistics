@@ -51,9 +51,6 @@ def home():
 def main(steamid):
     timeStart = time.time()
 
-    with open('../steam_api_key') as f:
-        apikey = f.read().strip()
-
     url = ("http://api.steampowered.com/IEconItems_730/GetPlayerItems/" +
            "v0001/?key=" + apikey + "&SteamID=" + steamid)
 
