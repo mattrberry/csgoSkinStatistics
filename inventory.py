@@ -4,9 +4,18 @@ import math
 from flask import Flask, render_template, Markup, request
 import time
 
-
-with open('../steam_api_key') as f:
-    apikey = f.read().strip()
+doppler = {415:"Ruby",
+           416:"Sapphire",
+           417:"Black Pearl",
+           418:"Phase 1",
+           419:"Phase 2",
+           420:"Phase 3",
+           421:"Phase 4",
+           568:"Emerald",
+           569:"Phase 1",
+           570:"Phase 2",
+           571:"Phase 3",
+           572:"Phase 4"}
 
 
 app = Flask(__name__)
@@ -14,6 +23,9 @@ app = Flask(__name__)
 
 @app.route('/displayInventory', methods=["POST"])
 def displayInventory():
+    with open('steam_api_key') as f:
+        apikey = f.read().strip()
+    
     userinput = request.form['input']
     steamid = request.form['id']
     itemid = request.form['itemid']
@@ -51,7 +63,7 @@ def main(steamid):
         if response.text != "{\n\n}":
             break
         elif steamAPIcalls >= 50:
-            return "Tell Steam to fix their fucking API"
+            return "Steam API appears to be slow."
 
     playerItems = json.loads(response.text)
 
@@ -72,7 +84,7 @@ def main(steamid):
         itemType = item["defindex"]
         try:
             itemName = itemDB["item"][str(itemType)]
-        except:
+        except KeyError:
             itemName = "graffiti"  # pass
 
         if itemType <= 516 and item["attributes"][0]["defindex"] == 6:
@@ -83,29 +95,14 @@ def main(steamid):
 
             special = ""
 
-            try:
-                if pattern == "Fade" or pattern == "Marble Fade":
+            if pattern == "Fade" or pattern == "Marble Fade":
+                try:
                     special = patternDB[itemName][pattern][paintIndex]
-                elif pattern == "Doppler" or pattern == "Gamma Doppler":
-                    if patternIndex == 415:
-                        special = "Ruby"
-                    elif patternIndex == 416:
-                        special = "Sapphire"
-                    elif patternIndex == 417:
-                        special = "Black Pearl"
-                    elif patternIndex == 418 or patternIndex == 569:
-                        special = "Phase 1"
-                    elif patternIndex == 419 or patternIndex == 570:
-                        special = "Phase 2"
-                    elif patternIndex == 420 or patternIndex == 571:
-                        special = "Plase 3"
-                    elif patternIndex == 421 or patternIndex == 572:
-                        special = "Phase 4"
-                    elif patternIndex == 568:
-                        special = "Emerald"
-            except:
-                pass
-            
+                except KeyError:
+                    pass
+            elif pattern == "Doppler" or pattern == "Gamma Doppler":
+                special = doppler[patternIndex]
+
             for attribute in item["attributes"]:
                 if attribute["defindex"] == 81:
                     itemName = ("<span class=\"pop\">StatTrak</span> " +
