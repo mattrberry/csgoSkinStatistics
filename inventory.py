@@ -4,6 +4,9 @@ import math
 from flask import Flask, render_template, Markup, request
 import time
 
+with open('steam_api_key') as f:
+    apikey = f.read().strip()
+
 doppler = {415:"Ruby",
            416:"Sapphire",
            417:"Black Pearl",
@@ -23,9 +26,6 @@ app = Flask(__name__)
 
 @app.route('/displayInventory', methods=["POST"])
 def displayInventory():
-    with open('steam_api_key') as f:
-        apikey = f.read().strip()
-    
     userinput = request.form['input']
     steamid = request.form['id']
     itemid = request.form['itemid']
