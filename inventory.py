@@ -28,9 +28,9 @@ app = Flask(__name__)
 def displayInventory():
     userinput = request.form['input']
     steamid = request.form['id']
-    itemid = request.form['itemid']
+    inspectid = request.form['itemid']
 
-    response = main(convertID(str(steamid)))
+    response = main(convertID(str(steamid)), str(inspectid))
     return response
 
 
@@ -48,7 +48,7 @@ def home():
     return render_template('index.html', info_location="")
 
 
-def main(steamid):
+def main(steamid, inspectid):
     timeStart = time.time()
 
     url = ("http://api.steampowered.com/IEconItems_730/GetPlayerItems/" +
@@ -74,6 +74,7 @@ def main(steamid):
         patternDB = json.load(f, encoding='utf-8')
 
     skins = []
+    inspect = []
     keys = {}
 
     for item in playerItems["result"]["items"]:
@@ -113,6 +114,9 @@ def main(steamid):
             skin = [itemName, pattern, special, floatValue]
             skins.append(skin)
 
+            if str(itemID) == inspectid:
+                inspect.append(skin)
+
         elif "Key" in itemName:
             if itemName in keys:
                 keys[itemName] += 1
@@ -121,8 +125,22 @@ def main(steamid):
 
     # timeTotal = time.time() - timeStart
 
-    return ("<table>" + skinString(skins) + keyString(keys) + "</table>")
+    return ("<table>" + inspectString(inspect) + skinString(skins) +
+            keyString(keys) + "</table>")
 
+
+def inspectString(inspect):
+    inspectString = ""
+
+    try:
+        if inspect[0] != "none":
+            inspectString += "<tr><th>Skins</th>"
+            inspectString += ("<th>Float</th></tr>")
+            inspectString += outputWeapon(inspect)
+    except IndexError:
+        pass
+    
+    return inspectString
 
 def skinString(skins):
     skinString = ""
@@ -175,4 +193,4 @@ def sortKeys(keys):
     return [k for (c, k) in sorted(zip(counts, keyList))[::-1]]
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port='80', threaded=True)
+    app.run()
