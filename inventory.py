@@ -134,7 +134,7 @@ def inspectString(inspect):
 
     try:
         if inspect[0] != "none":
-            inspectString += "<tr><th>Skins</th>"
+            inspectString += "<tr><th>Inspected Item</th>"
             inspectString += ("<th>Float</th></tr>")
             inspectString += outputWeapon(inspect)
     except IndexError:
