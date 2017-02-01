@@ -3,25 +3,18 @@ import json
 import math
 from flask import Flask, render_template, Markup, request
 import time
+from skinData import fades, order, doppler
 
 with open('steam_api_key') as f:
     apikey = f.read().strip()
 
-doppler = {415:"Ruby",
-           416:"Sapphire",
-           417:"Black Pearl",
-           418:"Phase 1",
-           419:"Phase 2",
-           420:"Phase 3",
-           421:"Phase 4",
-           568:"Emerald",
-           569:"Phase 1",
-           570:"Phase 2",
-           571:"Phase 3",
-           572:"Phase 4"}
-
 
 app = Flask(__name__)
+
+
+@app.route('/')
+def home():
+    return render_template('index.html', info_location="")
 
 
 @app.route('/displayInventory', methods=["POST"])
@@ -30,7 +23,15 @@ def displayInventory():
     steamid = request.form['id']
     inspectid = request.form['itemid']
 
-    response = main(convertID(str(steamid)), str(inspectid))
+    try:
+        response = main(convertID(str(steamid)), str(inspectid))
+    except KeyError:
+        response = ("<p style=\"text-align:center\">" +
+                    "This Steam ID appears not to exist or it is private.<br>" +
+                    "If you're absolutely sure that this is incorrect, try again in a few seconds.<br>" +
+                    "If the error persists, use the \"Contact me.\" button below.<br>" +
+                    "</p>")
+            
     return response
 
 
@@ -41,11 +42,6 @@ def convertID(steamid):
         response = requests.get(url)
         steamid = json.loads(response.text)['response']['steamid']
     return steamid
-
-
-@app.route('/')
-def home():
-    return render_template('index.html', info_location="")
 
 
 def main(steamid, inspectid):
@@ -85,7 +81,7 @@ def main(steamid, inspectid):
         except KeyError:
             itemName = "graffiti"  # pass
 
-        if itemType <= 516 and item["attributes"][0]["defindex"] == 6:
+        if (itemType <= 516 or itemType in range(5027,5035)) and item["attributes"][0]["defindex"] == 6:
             patternIndex = item["attributes"][0]["float_value"]
             pattern = skinDB["skin"][str(patternIndex)]
             paintIndex = str(int(item["attributes"][1]["float_value"]))
@@ -93,11 +89,17 @@ def main(steamid, inspectid):
 
             special = ""
 
-            if pattern == "Fade" or pattern == "Marble Fade":
+            if pattern == "Marble Fade":
                 try:
                     special = patternDB[itemName][pattern][paintIndex]
                 except KeyError:
                     pass
+            elif pattern == "Fade" and itemName in fades:
+                info = fades[itemName]
+                unscaled = (order.index(int(paintIndex)) * info[1]) % 1000
+                scaled = unscaled / 1000
+                percentage = round(info[0] + scaled * (100 - info[0]))
+                special = str(percentage) + "%"
             elif pattern == "Doppler" or pattern == "Gamma Doppler":
                 special = doppler[patternIndex]
 
@@ -122,8 +124,6 @@ def main(steamid, inspectid):
                 keys[itemName] += 1
             else:
                 keys[itemName] = 1
-
-    # timeTotal = time.time() - timeStart
 
     return ("<table>" + inspectString(inspect) + skinString(skins) +
             keyString(keys) + "</table>")
