@@ -134,13 +134,15 @@ def main(steamid, inspectid):
 
 
 def inspectString(inspect):
-    inspectString = "<tr><th>Inspected Item</th><th>Float</th></tr>"
-
-    if inspect[0][3] > 0:
-        inspectString += outputWeapon(inspect)
-    else:
-        inspectString += "<tr><td>" + inspect[0][0] + "</td><td></td></tr>"
-
+    try:
+        inspectString = "<tr><th>Inspected Item</th><th>Float</th></tr>"
+        if inspect[0][3] > 0:
+            inspectString += outputWeapon(inspect)
+        else:
+            inspectString += "<tr><td>" + inspect[0][0] + "</td><td></td></tr>"
+    except:
+        inspectString = ""
+        
     return inspectString
 
 def skinString(skins):
