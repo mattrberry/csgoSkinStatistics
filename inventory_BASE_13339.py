@@ -27,11 +27,11 @@ def displayInventory():
         response = main(convertID(str(steamid)), str(inspectid))
     except KeyError:
         response = ("<p style=\"text-align:center\">" +
-                    """This Steam ID appears not to exist or it is private.<br>
-                    If you're absolutely sure that this is incorrect, try again
-                    in a few seconds.<br>If the error persists, use the
-                    \"Contact me.\" button below.<br>""" + "</p>")
-
+                    "This Steam ID appears not to exist or it is private.<br>" +
+                    "If you're absolutely sure that this is incorrect, try again in a few seconds.<br>" +
+                    "If the error persists, use the \"Contact me.\" button below.<br>" +
+                    "</p>")
+            
     return response
 
 
@@ -79,10 +79,9 @@ def main(steamid, inspectid):
         try:
             itemName = itemDB["item"][str(itemType)]
         except KeyError:
-            itemName = "graffiti or other untracked item - hopefully"  # pass
+            itemName = "graffiti"  # pass
 
-        if ((itemType <= 516 or itemType in range(5027, 5035)) and
-                item["attributes"][0]["defindex"] == 6):
+        if (itemType <= 516 or itemType in range(5027,5035)) and item["attributes"][0]["defindex"] == 6:
             patternIndex = item["attributes"][0]["float_value"]
             pattern = skinDB["skin"][str(patternIndex)]
             paintIndex = str(int(item["attributes"][1]["float_value"]))
@@ -126,26 +125,22 @@ def main(steamid, inspectid):
             else:
                 keys[itemName] = 1
 
-    if inspectid != "none" and len(inspect) < 1:
-        inspect.append(["No longer in this inventory.", "", "", -1])
-
-
     return ("<table>" + inspectString(inspect) + skinString(skins) +
             keyString(keys) + "</table>")
 
 
 def inspectString(inspect):
-    try:
-        inspectString = "<tr><th>Inspected Item</th><th>Float</th></tr>"
-        if inspect[0][3] > 0:
-            inspectString += outputWeapon(inspect)
-        else:
-            inspectString += "<tr><td>" + inspect[0][0] + "</td><td></td></tr>"
-    except:
-        inspectString = ""
-        
-    return inspectString
+    inspectString = ""
 
+    try:
+        if inspect[0] != "none":
+            inspectString += "<tr><th>Inspected Item</th>"
+            inspectString += ("<th>Float</th></tr>")
+            inspectString += outputWeapon(inspect)
+    except IndexError:
+        pass
+    
+    return inspectString
 
 def skinString(skins):
     skinString = ""
@@ -164,7 +159,7 @@ def outputWeapon(weapons):
 
     for weapon in weapons:
         weaponString += ("<tr><td>" + weapon[0] + " | " + weapon[1] +
-                         "<sup><span style=\"font-size:12px\" class=pop> " +
+                         "<sup><span style=\"font-size:12px\" class=\"pop\"> " +
                          weapon[2] + "</span></sup></td>" +
                          "<td>" + "{0:.12f}".format(weapon[3]) + "</td></tr>")
 

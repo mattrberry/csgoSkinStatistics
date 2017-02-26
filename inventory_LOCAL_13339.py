@@ -126,24 +126,21 @@ def main(steamid, inspectid):
             else:
                 keys[itemName] = 1
 
-    if inspectid != "none" and len(inspect) < 1:
-        inspect.append(["No longer in this inventory.", "", "", -1])
-
-
     return ("<table>" + inspectString(inspect) + skinString(skins) +
             keyString(keys) + "</table>")
 
 
 def inspectString(inspect):
+    inspectString = ""
+
     try:
-        inspectString = "<tr><th>Inspected Item</th><th>Float</th></tr>"
-        if inspect[0][3] > 0:
+        if inspect[0] != "none":
+            inspectString += "<tr><th>Inspected Item</th>"
+            inspectString += ("<th>Float</th></tr>")
             inspectString += outputWeapon(inspect)
-        else:
-            inspectString += "<tr><td>" + inspect[0][0] + "</td><td></td></tr>"
-    except:
-        inspectString = ""
-        
+    except IndexError:
+        pass
+
     return inspectString
 
 

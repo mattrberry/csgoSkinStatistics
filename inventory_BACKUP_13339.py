@@ -139,11 +139,17 @@ def inspectString(inspect):
         inspectString = "<tr><th>Inspected Item</th><th>Float</th></tr>"
         if inspect[0][3] > 0:
             inspectString += outputWeapon(inspect)
+<<<<<<< HEAD
+    except IndexError:
+        pass
+
+=======
         else:
             inspectString += "<tr><td>" + inspect[0][0] + "</td><td></td></tr>"
     except:
         inspectString = ""
         
+>>>>>>> 97a2a5883bcaf377f1d1e3d5f7e25b8cc7415b88
     return inspectString
 
 
