@@ -4,9 +4,9 @@ import math
 from flask import Flask, render_template, Markup, request
 import time
 from skinData import fades, order, doppler
+import os
 
-with open('steam_api_key') as f:
-    apikey = f.read().strip()
+apikey = os.environ['steam_api_key']
 
 
 app = Flask(__name__)
@@ -129,7 +129,6 @@ def main(steamid, inspectid):
     if inspectid != "none" and len(inspect) < 1:
         inspect.append(["No longer in this inventory.", "", "", -1])
 
-
     return ("<table>" + inspectString(inspect) + skinString(skins) +
             keyString(keys) + "</table>")
 
@@ -143,7 +142,7 @@ def inspectString(inspect):
             inspectString += "<tr><td>" + inspect[0][0] + "</td><td></td></tr>"
     except:
         inspectString = ""
-        
+
     return inspectString
 
 
