@@ -23,6 +23,16 @@ table {
   background: var(--text);
 }
 
+html {
+    height: 100%;
+}
+
+body {
+    min-height: 100%;
+    margin: 0;
+}
+
+
 html *
 {
   font-size: 16px;
@@ -69,17 +79,6 @@ a, a:visited, a:hover, a:focus, a:active {
   text-decoration: none;
   color: var(--text);
 }
-
-/*#footer {
-  position: fixed;
-  left: 0;
-  bottom: 0;
-  width: 100%;
-  //text-align: center;
-  height: 20px;
-}*/
-
-
 
 ul.nav {
     width:100%;
@@ -164,6 +163,21 @@ input[type="text"]:not(:hover):not(:focus) {
 #display {
   display: table;
   margin: 0 auto;
+}
+
+#footer {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    text-align: center;
+
+    margin: 0;
+    padding: 4px;
+
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-around;
 }
 
 @keyframes light-dark {

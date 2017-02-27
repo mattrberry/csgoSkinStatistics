@@ -52,7 +52,7 @@ $(document).ready(function() {
 	    $("#loading").hide();
 	    document.getElementById('display').innerHTML = data;
 	    
-	    $("#display").append("<div style=\"text-align:center;\">Loaded in " + loadTime + " seconds</div>");
+	    $("#display").append("<div style=\"text-align:center;\">Loaded in " + loadTime + " seconds</div><br><br>");
 	}
 	
 	var start = performance.now();
