@@ -97,8 +97,8 @@ def main(steamid, inspectid):
                     pass
             elif pattern == "Fade" and itemName in fades:
                 info = fades[itemName]
-                unscaled = (order.index(int(paintIndex)) * info[1]) % 1000
-                scaled = unscaled / 1000
+                unscaled = order[::info[1]].index(int(paintIndex))
+                scaled = unscaled / 1001
                 percentage = math.ceil(info[0] + scaled * (100 - info[0]))
                 special = str(percentage) + "%"
             elif pattern == "Doppler" or pattern == "Gamma Doppler":
