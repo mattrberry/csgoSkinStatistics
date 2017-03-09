@@ -99,7 +99,7 @@ def main(steamid, inspectid):
                 info = fades[itemName]
                 unscaled = (order.index(int(paintIndex)) * info[1]) % 1000
                 scaled = unscaled / 1000
-                percentage = round(info[0] + scaled * (100 - info[0]))
+                percentage = math.ceil(info[0] + scaled * (100 - info[0]))
                 special = str(percentage) + "%"
             elif pattern == "Doppler" or pattern == "Gamma Doppler":
                 special = doppler[patternIndex]
