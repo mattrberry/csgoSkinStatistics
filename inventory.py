@@ -57,6 +57,7 @@ def main(steamid, inspectid):
             break
         elif steamAPIcalls >= 50:
             return "Steam API appears to be slow."
+        steamAPIcalls += 1
 
     playerItems = json.loads(response.text)
 
