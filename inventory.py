@@ -34,7 +34,7 @@ def send(s, a, d, m):
         'param_m': m,
         })
 
-    resp = cs.wait_event(ECsgoGCMsg.EMsgGCCStrike15_v2_Client2GCEconPreviewDataBlockResponse, timeout = 10)
+    resp = cs.wait_event(ECsgoGCMsg.EMsgGCCStrike15_v2_Client2GCEconPreviewDataBlockResponse, timeout = 1)
 
     try:
         return struct.unpack('f', struct.pack('i', resp[0].iteminfo.paintwear))
@@ -60,13 +60,12 @@ def displayInventory():
 
     resp = None
     count = 0
-    while resp is None and count < 2:
-        print('count:' + str(count))
+    while resp is None and count < 3:
         resp = send(s, a, d, m)
         count += 1
 
     if resp is None:
-        return 'Either Steam is slow or that\'s an invalid link'
+        return 'Tried 3 times. Link is probably invalid.'
 
     return str(resp[0])
 
