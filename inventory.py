@@ -1,9 +1,4 @@
-import requests
-import json
-import math
 from flask import Flask, render_template, Markup, request
-import time
-from skinData import fades, order, doppler
 import os
 
 from steam import SteamClient
@@ -68,19 +63,6 @@ def displayInventory():
         return 'Tried 3 times. Link is probably invalid.'
 
     return str(resp[0])
-
-
-def main(steamid, inspectid):
-    timeStart = time.time()
-
-    with open('json/itemDB.json') as f:
-        itemDB = json.load(f, encoding='utf-8')
-
-    with open('json/skinDB.json') as f:
-        skinDB = json.load(f, encoding='utf-8')
-
-    with open('json/patternDB.json') as f:
-        patternDB = json.load(f, encoding='utf-8')
 
 
 if __name__ == '__main__':
