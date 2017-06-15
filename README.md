@@ -1,13 +1,16 @@
 # csgoSkinStatistics
 
-This is a simple demo for contacting Steam API to rerieve CSGO item data using Flask.
+A very simple site designed to hit csgo's game coordinator and return information about csgo items.
 
-Compared to csgozone, this tends to run faster and rate fade percentages slightly harsher.
+### Requirements
 
-A working example can be found at [csgo.mattrb.com](https://csgo.mattrb.com)
+This repository has 3 external dependencies. These are:
++ Flask
++ ValvePython/steam https://github.com/ValvePython/steam
++ ValvePython/csgo https://github.com/ValvePython/csgo
 
 ### Installation and Setup
 
-After cloning this repository, create a new environment variable named 'steam_api_key' containing your Steam API key.
+After cloning this repository, create environment variables named 'steam_user' and 'steam_pass'. I imagine their contents are self explanatory.
 
-Run inventory.py with Python 3 to start the application.
+Run inventory.py with Python 3 to start the application. The page will be on localhost:5000.
