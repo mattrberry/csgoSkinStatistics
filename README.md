@@ -13,4 +13,4 @@ This repository has 3 external dependencies. These are:
 
 After cloning this repository, create environment variables named 'steam_user' and 'steam_pass'. I imagine their contents are self explanatory.
 
-Run inventory.py with Python 3 to start the application. The page will be on localhost:5000.
+Run skinstats.py with Python 3 to start the application. The page will be on localhost:5000.
