@@ -13,8 +13,16 @@ class CSGOWorker(object):
         self.steam = client = SteamClient()
         self.csgo = cs = CSGOClient(self.steam)
 
+        @client.on('channel_secured')
+        def send_login():
+            if client.relogin_available:
+                client.relogin()
+            else:
+                client.login(**self.logon_details)
+
         @client.on('logged_on')
         def start_csgo():
+            self.csgo.launch()
             LOG.info('steam login success')
             LOG.info('launching csgo...')
 
@@ -33,6 +41,7 @@ class CSGOWorker(object):
 
         self.steam.connect()
         self.steam.wait_event('logged_on')
+        self.csgo.wait_event('ready')
 
     def close(self):
         if self.steam.connected:
@@ -43,13 +52,21 @@ class CSGOWorker(object):
     def send(self, s, a, d, m):
         LOG.info('sending s:{} a:{} d:{} m:{}'.format(s, a, d, m))
 
-        cs.send(ECsgoGCMsg.EMsgGCCStrike15_v2_Client2GCEconPreviewDataBlockRequest, {
+        self.csgo.send(ECsgoGCMsg.EMsgGCCStrike15_v2_Client2GCEconPreviewDataBlockRequest, {
             'param_s': s,
             'param_a': a,
             'param_d': d,
             'param_m': m,
             })
 
-        resp = cs.wait_event(ECsgoGCMsg.EMsgGCCStrike15_v2_Client2GCEconPreviewDataBlockResponse, timeout = 2)
+        resp = self.csgo.wait_event(ECsgoGCMsg.EMsgGCCStrike15_v2_Client2GCEconPreviewDataBlockResponse, timeout=1)
+        
+        if resp is None:
+            LOG.info('csgo failed to respond')
+            raise TypeError
 
-        return struct.unpack('f', struct.pack('i', resp[0].iteminfo.paintwear))
+        paintwear = str(struct.unpack('f', struct.pack('i', resp[0].iteminfo.paintwear))[0])
+
+        LOG.info('paintwear: {}'.format(paintwear))
+
+        return paintwear 

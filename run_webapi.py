@@ -22,23 +22,32 @@ def displayInventory():
     a = int(request.form['a'])
     d = int(request.form['d'])
     m = int(request.form['m'])
+    
+    paintwear = None
 
-    print('s:{}, a:{}, d:{}, m:{}'.format(s, a, d, m))
+    for i in range(1):
+        try:
+            paintwear = worker.send(s, a, d, m)
+            break
+        except:
+            pass
 
-    float = worker.send(s, a, d, m)
-    return float
+    if not paintwear:
+        paintwear = 'Invalid link or Steam is slow.'
+ 
+    return paintwear
 
 
 if __name__ == '__main__':
-    LOG.info('Simple CSGO GC client')
-    LOG.info('---------------------')
-    LOG.info('Starting CSGO worker.')
+    LOG.info('Simple CSGO GC')
+    LOG.info('---------------')
+    LOG.info('Starting worker')
 
     worker = CSGOWorker()
 
     worker.start()
 
-    LOG.info('Starting HTTP server.')
+    LOG.info('Starting server')
     http_server = WSGIServer(('', 5000), app)
 
     try:
