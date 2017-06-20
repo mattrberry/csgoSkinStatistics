@@ -1,14 +1,6 @@
 function display(data, loadTime) {
-    $("#container").animate({
-        'padding-top': 5,
-    }, "slow", "swing");
-
-    $("#display").animate({
-        'padding-top': "0px"
-    }, "slow", "swing");
-
-    $("#loading").hide();
-    document.getElementById('display').innerHTML = data;
+    iteminfo = JSON.parse(data.split("'").join("\""));
+    document.getElementById('display').innerHTML = iteminfo.paintwear;
 
     $("#display").append("<div style=\"text-align:center;\">Loaded in " + loadTime + " seconds</div><br><br>");
 }
@@ -22,11 +14,6 @@ $(document).ready(function() {
 
     $("#button").click(function() {
         $(this).blur();
-
-        $("#display").animate({
-            'padding-top': "100%"
-        }, "slow", "swing");
-        $("#loading").show();
 
         var box = $("#textbox").val();
 
@@ -49,7 +36,7 @@ $(document).ready(function() {
                 display(data, ((performance.now()- start)/1000).toFixed(2));
             });
         } catch (e) {
-            display("<p>Not a valid inspect link</p>", "0.0")
+            document.getElementById('display').innerHTML = "<p>Not a valid inspect link</p>";
         }
     })
 
