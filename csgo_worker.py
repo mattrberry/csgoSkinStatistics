@@ -6,6 +6,35 @@ from csgo.enums import ECsgoGCMsg
 import struct
 import os
 
+import collections
+import functools
+
+class memoized(object):
+    '''Decorator. Caches a function's return value each time it is called.
+    If called later with the same arguments, the cached value is returned
+    (not reevaluated).
+    '''
+    def __init__(self, func):
+        self.func = func
+        self.cache = {}
+    def __call__(self, *args):
+        if not isinstance(args, collections.Hashable):
+            # uncacheable. a list, for instance.
+            # better to not cache than blow up.
+            return self.func(*args)
+        if args in self.cache:
+            return self.cache[args]
+        else:
+            value = self.func(*args)
+            self.cache[args] = value
+            return value
+    def __repr__(self):
+        '''Return the function's docstring.'''
+        return self.func.__doc__
+    def __get__(self, obj, objtype):
+        '''Support instance methods.'''
+        return functools.partial(self.__call__, obj)
+
 LOG = logging.getLogger('CSGO Worker')
 
 class CSGOWorker(object):
@@ -22,9 +51,8 @@ class CSGOWorker(object):
 
         @client.on('logged_on')
         def start_csgo():
-            self.csgo.launch()
             LOG.info('steam login success')
-            LOG.info('launching csgo...')
+            self.csgo.launch()
 
         @cs.on('ready')
         def gc_ready():
@@ -32,8 +60,6 @@ class CSGOWorker(object):
             pass
 
     def start(self):
-        LOG.info('attempting steam signin')
-
         self.logon_details = {
                 'username': os.environ['steam_user'],
                 'password': os.environ['steam_pass'],
@@ -48,7 +74,7 @@ class CSGOWorker(object):
             self.steam.logout()
         LOG.info('logged out')
 
-
+    @memoized
     def send(self, s, a, d, m):
         LOG.info('sending s:{} a:{} d:{} m:{}'.format(s, a, d, m))
 
@@ -65,8 +91,19 @@ class CSGOWorker(object):
             LOG.info('csgo failed to respond')
             raise TypeError
 
-        paintwear = str(struct.unpack('f', struct.pack('i', resp[0].iteminfo.paintwear))[0])
+        resp_iteminfo = resp[0].iteminfo
+        paintwear = struct.unpack('f', struct.pack('i', resp_iteminfo.paintwear))[0]
 
-        LOG.info('paintwear: {}'.format(paintwear))
+        iteminfo = {
+                'itemid':     resp_iteminfo.itemid,
+                'defindex':   resp_iteminfo.defindex,
+                'paintindex': resp_iteminfo.paintindex,
+                'rarity':     resp_iteminfo.rarity,
+                'quality':    resp_iteminfo.quality,
+                'paintwear':  paintwear,
+                'paintseed':  resp_iteminfo.paintseed,
+                'inventory':  resp_iteminfo.inventory,
+                'origin':     resp_iteminfo.origin,
+                }
 
-        return paintwear 
+        return iteminfo
