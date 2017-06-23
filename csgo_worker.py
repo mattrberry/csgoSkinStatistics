@@ -103,29 +103,27 @@ class CSGOWorker(object):
             raise TypeError
 
         resp_iteminfo = resp[0].iteminfo
-        paintwear = struct.unpack('f', struct.pack('i', resp_iteminfo.paintwear))[0]
 
-        name = self.itemDB['item'][str(resp_iteminfo.defindex)]
-        special = ""
-        pattern = self.skinDB['skin'][str(resp_iteminfo.paintindex)]
-        paintseed = resp_iteminfo.paintseed
+        paintwear   = struct.unpack('f', struct.pack('i', resp_iteminfo.paintwear))[0]
+        weapon_type = self.itemDB['item'][str(resp_iteminfo.defindex)]
+        pattern     = self.skinDB['skin'][str(resp_iteminfo.paintindex)]
+        name        = "{} | {}".format(weapon_type, pattern)
+        paintseed   = resp_iteminfo.paintseed
+        special     = ""
 
         if pattern == "Marble Fade":
             try:
-                special = self.patternDB[name][pattern][paintseed]
+                special = self.patternDB[weapon_type][pattern][paintseed]
             except KeyError:
-                pass
-        elif pattern == "Fade" and name in fades:
-            info = fades[name]
+                LOG.info("non-indexed marble fade")
+        elif pattern == "Fade" and weapon_type in fades:
+            info = fades[weapon_type]
             unscaled = order[::info[1]].index(int(paintseed))
             scaled = unscaled / 1001
             percentage = round(info[0] + scaled * (100 - info[0]))
             special = str(percentage) + "%"
         elif pattern == "Doppler" or pattern == "Gamma Doppler":
             special = doppler[resp_iteminfo.paintindex]
-
-
-        name = "{} | {}".format(name, pattern)
 
         iteminfo = {
                 'name':       name,
