@@ -1,10 +1,15 @@
 function display(data, loadTime) {
-    iteminfo = JSON.parse(data.split("'").join("\""));
+    try {
+        iteminfo = JSON.parse(data.split("'").join("\""));
 
-    document.getElementById('item_name').innerHTML = iteminfo.name + " <span class=\"pop\">" + iteminfo.special + "</span>";
-    document.getElementById('item_paintwear').innerHTML = iteminfo.paintwear;
-
-    document.getElementById('display').innerHTML = "<div style=\"text-align:center;\">Loaded in " + loadTime + " seconds</div><br><br>";
+        document.getElementById('item_name').innerHTML = iteminfo.name + " <span class=\"pop\">" + iteminfo.special + "</span>";
+        document.getElementById('item_paintwear').innerHTML = iteminfo.paintwear;
+        document.getElementById('status').innerHTML = "Loaded in " + loadTime + " seconds";
+    } catch (e) {
+        document.getElementById('item_name').innerHTML = "-";
+        document.getElementById('item_paintwear').innerHTML = '-';
+        document.getElementById('status').innerHTML = data;
+    }
 }
 
 $(document).ready(function() {
