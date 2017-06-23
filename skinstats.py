@@ -1,7 +1,5 @@
 from flask import Flask, render_template, Markup, request
 import os
-from gevent.wsgi import WSGIServer
-# from flask import Flask, request, abort, jsonify
 from csgo_worker import CSGOWorker
 
 import logging
@@ -42,10 +40,7 @@ if __name__ == '__main__':
     worker.start()
 
     LOG.info('starting server')
-    http_server = WSGIServer(('', 5000), app)
-
-    try:
-        http_server.serve_forever()
-    except:
-        LOG.info('exit requested')
-        worker.close()
+    
+    app.run()
+    LOG.info('exit requested')
+    worker.close()
