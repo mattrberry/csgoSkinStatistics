@@ -1,8 +1,10 @@
 function display(data, loadTime) {
     iteminfo = JSON.parse(data.split("'").join("\""));
-    document.getElementById('display').innerHTML = iteminfo.paintwear;
 
-    $("#display").append("<div style=\"text-align:center;\">Loaded in " + loadTime + " seconds</div><br><br>");
+    document.getElementById('item_name').innerHTML = iteminfo.name + " <span class=\"pop\">" + iteminfo.special + "</span>";
+    document.getElementById('item_paintwear').innerHTML = iteminfo.paintwear;
+
+    document.getElementById('display').innerHTML = "<div style=\"text-align:center;\">Loaded in " + loadTime + " seconds</div><br><br>";
 }
 
 $(document).ready(function() {
@@ -31,14 +33,14 @@ $(document).ready(function() {
             document.getElementById('textbox').value = box;
             location.hash = box;
 
-            var start = performance.now();
-            $.post("/displayInventory", requestData).done(function (data) {
-                display(data, ((performance.now()- start)/1000).toFixed(2));
-            });
+            post(requestData);
         } catch (e) {
             document.getElementById('display').innerHTML = "<p>Not a valid inspect link</p>";
         }
     })
+
+    document.getElementById('textbox').value = "S76561198261551396A9067619073D14604201839850564398";
+    document.getElementById('button').click();
 
     if (window.location.hash) {
         var hashURL = window.location.hash.substring(1);
@@ -46,3 +48,10 @@ $(document).ready(function() {
         $("#button")[0].click();
     }
 });
+
+function post(requestData) {
+    var start = performance.now();
+    $.post("/displayInventory", requestData).done(function (data) {
+        display(data, ((performance.now()- start)/1000).toFixed(2));
+    });
+}
