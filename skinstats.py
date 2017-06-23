@@ -30,17 +30,15 @@ def displayInventory():
 
     return str(iteminfo)
 
-if __name__ == '__main__':
-    LOG.info('simple csgo gc')
-    LOG.info('--------------')
-    LOG.info('starting worker')
+LOG.info('simple csgo gc')
+LOG.info('--------------')
+LOG.info('starting worker')
 
-    worker = CSGOWorker()
+worker = CSGOWorker()
 
-    worker.start()
+worker.start()
 
-    LOG.info('starting server')
+LOG.info('starting server')
     
+if __name__ == '__main__':
     app.run()
-    LOG.info('exit requested')
-    worker.close()
