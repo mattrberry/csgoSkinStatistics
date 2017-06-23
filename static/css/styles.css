@@ -7,7 +7,8 @@
 }
 
 .pop {
-    color: var(--pop)
+    color: var(--pop);
+    vertical-align:super;
 }
 
 body {
@@ -160,11 +161,6 @@ input[type="text"]:not(:hover):not(:focus) {
   animation: light-dark .5s forwards;
 }
 
-#display {
-  display: table;
-  margin: 0 auto;
-}
-
 #footer {
     position: absolute;
     left: 0;
@@ -179,28 +175,6 @@ input[type="text"]:not(:hover):not(:focus) {
     flex-flow: row wrap;
     justify-content: space-around;
 }
-
-@keyframes light-dark {
-    from {background-color: var(--light);}
-    to {background-color: var(--dark);}
-}
-
-@keyframes dark-light {
-    from {background-color: var(--dark);}
-    to {background-color: var(--light);}
-}
-
-@keyframes gray-light {
-    from {background-color: var(--gray);}
-    to {background-color: var(--light);}
-}
-
-@keyframes light-gray{
-    from {background-color: var(--light);}
-    to {background-color: var(--gray);}
-}
-
-
 
 ::-webkit-scrollbar {
   width: 16px;
@@ -223,74 +197,4 @@ input[type="text"]:not(:hover):not(:focus) {
 
 ::-webkit-scrollbar-track {
   border-radius: 100px;
-}
-
-/*codepen.io/wzhow/pen/MwqjZE*/
-
-.pa {
-  font-size:0;
-  text-align:center;
-  position: relative;
-  width: 40px;
-  height: 40px;
-  left:calc(50% - 40px / 2);
-  top:calc(50% - 40px / 2);
-}
-
-.line-scale  .pa div,
-.line-scale-pulse-out  .pa div,
-.line-scale-pulse-out-rapid  .pa div,
-.line-scale-party  .pa div {
-  width: 4px;
-  height: 40px;
-  background: var(--text);
-  display:inline-block;
-  margin:0 2px;
-  border-radius:2px;
-}
-.line-scale  .pa div {
-  animation:line-scale 1s linear infinite;
-}
-
-.line-scale .pa div:nth-child(2) {
-  animation-delay:-0.9s
-}
-.line-scale .pa div:nth-child(3) {
-  animation-delay:-0.8s
-}
-.line-scale .pa div:nth-child(4) {
-  animation-delay:-0.7s
-}
-.line-scale .pa div:last-child {
-  animation-delay:-0.6s;
-}
-
-@keyframes line-scale{
-  0%,15%,85%,100% {
-   transform:scaleY(.4)
-  }
-  35%,66% {
-   transform:scaleY(1)
-  }
-}
-
-.line-scale-pulse-out  .pa div {
-  animation:line-scale-pulse-out .8s linear infinite;
-}
-.line-scale-pulse-out .pa div:nth-child(2),
-.line-scale-pulse-out .pa div:nth-child(4) {
-  animation-delay:-0.6s
-}
-.line-scale-pulse-out .pa div:nth-child(1),
-.line-scale-pulse-out .pa div:nth-child(5) {
-  animation-delay:-0.4s
-}
-
-@keyframes line-scale-pulse-out {
-  0%,100% {
-   transform:scaleY(.4)
-  }
-  50% {
-   transform:scaleY(1)
-  }
 }
