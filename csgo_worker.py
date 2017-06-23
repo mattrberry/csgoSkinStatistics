@@ -5,6 +5,8 @@ from csgo import CSGOClient
 from csgo.enums import ECsgoGCMsg
 import struct
 import os
+import json
+from skinData import fades, order, doppler
 
 import collections
 import functools
@@ -41,6 +43,15 @@ class CSGOWorker(object):
     def __init__(self):
         self.steam = client = SteamClient()
         self.csgo = cs = CSGOClient(self.steam)
+
+        with open('json/itemDB.json') as f:
+            self.itemDB = json.load(f, encoding='utf-8')
+
+        with open('json/skinDB.json') as f:
+            self.skinDB = json.load(f, encoding='utf-8')
+
+        with open('json/patternDB.json') as f:
+            self.patternDB = json.load(f, encoding='utf-8')
 
         @client.on('channel_secured')
         def send_login():
@@ -86,7 +97,7 @@ class CSGOWorker(object):
             })
 
         resp = self.csgo.wait_event(ECsgoGCMsg.EMsgGCCStrike15_v2_Client2GCEconPreviewDataBlockResponse, timeout=1)
-        
+
         if resp is None:
             LOG.info('csgo failed to respond')
             raise TypeError
@@ -94,7 +105,31 @@ class CSGOWorker(object):
         resp_iteminfo = resp[0].iteminfo
         paintwear = struct.unpack('f', struct.pack('i', resp_iteminfo.paintwear))[0]
 
+        name = self.itemDB['item'][str(resp_iteminfo.defindex)]
+        special = ""
+        pattern = self.skinDB['skin'][str(resp_iteminfo.paintindex)]
+        paintseed = resp_iteminfo.paintseed
+
+        if pattern == "Marble Fade":
+            try:
+                special = self.patternDB[name][pattern][paintseed]
+            except KeyError:
+                pass
+        elif pattern == "Fade" and name in fades:
+            info = fades[name]
+            unscaled = order[::info[1]].index(int(paintseed))
+            scaled = unscaled / 1001
+            percentage = round(info[0] + scaled * (100 - info[0]))
+            special = str(percentage) + "%"
+        elif pattern == "Doppler" or pattern == "Gamma Doppler":
+            special = doppler[resp_iteminfo.paintindex]
+
+
+        name = "{} | {}".format(name, pattern)
+
         iteminfo = {
+                'name':       name,
+                'special':    special,
                 'itemid':     resp_iteminfo.itemid,
                 'defindex':   resp_iteminfo.defindex,
                 'paintindex': resp_iteminfo.paintindex,
