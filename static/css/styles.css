@@ -1,14 +1,13 @@
 :root {
-  --gray: #34495E;
-  --dark: #2E4154;
-  --light: #485B6E;
-  --pop: #2ECC71;
-  --text: #ECF0F1;
+    --gray: #34495E;
+    --dark: #2E4154;
+    --light: #485B6E;
+    --pop: #2ECC71;
+    --text: #ECF0F1;
 }
 
 .pop {
     color: var(--pop);
-    vertical-align:super;
 }
 
 body {
@@ -16,16 +15,19 @@ body {
     position: relative;
 }
 
-table {
-    margin: 0 auto;
-}
-
 ::selection {
-  background: var(--text);
+    background: var(--text);
 }
 
 html {
     height: 100%;
+    font-size: 16px;
+    color: var(--text);
+    background: var(--gray);
+    font-family: 'Lato', sans-serif;
+    border: none;
+    border-radius: 4px;
+    outline: none;
 }
 
 body {
@@ -33,52 +35,64 @@ body {
     margin: 0;
 }
 
+#info_container_outer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
 
-html *
-{
-  font-size: 16px;
-  color: var(--text);
-  background: var(--gray);
-  font-family: 'Lato', sans-serif;
-  border: none;
-  border-radius: 4px;
-  outline: none;
+#info_container {
+    max-width: 660px;
+}
+
+.info_item {
+    text-align: center;
+    width: 260px;
+}
+
+.item_title {
+    margin: 0 auto;
+    padding: 4px;
+}
+
+.item_desc {
+    background-color: var(--dark);
+    border-radius: 4px;
+}
+
+.item_desc > p {
+    margin: 0 auto;
+    padding: 4px;
+}
+
+.item_desc > p:hover {
+    color: var(--pop);
 }
 
 #container {
-  width: 100%;
-  padding-top: 100px;
-  margin: 0 auto;
+    width: 100%;
+    padding-top: 100px;
+    margin: 0 auto;
+}
+
+#status {
+    text-align: center;
+    padding: 4px;
 }
 
 h1 {
-  text-align: center;
-  font-size: 32px;
+    text-align: center;
+    font-size: 32px;
 }
 
 form {
-  display: table;
-  margin: 0 auto;
-}
-
-th {
-  padding: 4px;
-  text-align: left;
-  background: var(--light);
-  margin: 0 auto;
-}
-
-td {
-  padding: 4px;
-  text-align: left;
-  margin: 0 auto;
-  background: var(--gray);
-  border-spacing: 0;
+    display: table;
+    margin: 0 auto;
 }
 
 a, a:visited, a:hover, a:focus, a:active {
-  text-decoration: none;
-  color: var(--text);
+    text-decoration: none;
+    color: var(--text);
 }
 
 ul.nav {
@@ -102,63 +116,61 @@ ul.nav {
     margin:0;
     display:block;
 }
-ul.nav li:first-child a{
-    border:none;
-}
-ul.nav li:last-child a {
-    border:none;
+
+input {
+    border: none;
+    color: var(--text);
+    font-family: Lato, sans-serif;
 }
 
 input[type=button] {
     -webkit-appearance: none;
+    background: var(--gray);
 }
 
 input[type=text] {
-  width: 180px;
-  background: var(--dark);
-  text-align: center;
-  padding: 4px;
-  font-size: 14px;
+    width: 180px;
+    background: var(--dark);
+    text-align: center;
+    padding: 4px;
+    font-size: 14px;
+    border: none;
 }
 
 input[type=text]:focus, input[type="radio"]:checked + label {
-  background: var(--light);
-}
-
-input[type="radio"] {
-  display: none;
+    background: var(--light);
 }
 
 label {
-  display:inline-block;
-  width: 86px;
-  text-align: center;
-  padding: 4px;
-  font-size: 14px;
+    display:inline-block;
+    width: 86px;
+    text-align: center;
+    padding: 4px;
+    font-size: 14px;
 }
 
 #button {
-  display:inline-block;
-  width: 188px;
-  text-align: center;
-  padding: 4px;
-  font-size: 14px;
+    display:inline-block;
+    width: 188px;
+    text-align: center;
+    padding: 4px;
+    font-size: 14px;
 }
 
-#button:hover, input[type="radio"]:hover:not(:checked) + label, tr.weapon:hover {
-  animation: gray-light .5s forwards;
+#button:hover {
+    animation: gray-light .5s forwards;
 }
 
-#button:not(:hover), input[type="radio"]:not(:hover):not(:checked) + label, tr.weapon:not(:hover) {
-  animation: light-gray .5s forwards;
+#button:not(:hover) {
+    animation: light-gray .5s forwards;
 }
 
 input[type="text"]:hover {
-  animation: dark-light .5s forwards;
+    animation: dark-light .5s forwards;
 }
 
 input[type="text"]:not(:hover):not(:focus) {
-  animation: light-dark .5s forwards;
+    animation: light-dark .5s forwards;
 }
 
 #footer {
@@ -177,24 +189,24 @@ input[type="text"]:not(:hover):not(:focus) {
 }
 
 ::-webkit-scrollbar {
-  width: 16px;
-  height: 16px;
+    width: 16px;
+    height: 16px;
 }
 
 ::-webkit-scrollbar-button {
-  width: 0;
-  height: 0;
+    width: 0;
+    height: 0;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--dark);
-  border-radius: 100px;
+    background: var(--dark);
+    border-radius: 100px;
 }
 
 ::-webkit-scrollbar-thumb:hover, ::-webkit-scrollbar-thumb:active {
-  background: var(--light);
+    background: var(--light);
 }
 
 ::-webkit-scrollbar-track {
-  border-radius: 100px;
+    border-radius: 100px;
 }
