@@ -1,7 +1,7 @@
 :root {
-    --gray: #34495E;
-    --dark: #2E4154;
-    --light: #485B6E;
+    --gray: #1F2D3A;
+    --dark: #0F1D2A;
+    --light: #2F3D4A;
     --pop: #2ECC71;
     --text: #ECF0F1;
 }
@@ -65,8 +65,12 @@ body {
     padding: 4px;
 }
 
-.item_desc > p:hover {
-    color: var(--pop);
+.item_desc:hover {
+    animation: text-pop .5s forwards;
+}
+
+.item_desc:not(:hover) {
+    animation: pop-text .5s forwards;
 }
 
 #container {
@@ -128,33 +132,12 @@ input[type=button] {
     background: var(--gray);
 }
 
-input[type=text] {
-    width: 180px;
-    background: var(--dark);
-    text-align: center;
-    padding: 4px;
-    font-size: 14px;
-    border: none;
-}
-
-input[type=text]:focus, input[type="radio"]:checked + label {
-    background: var(--light);
-}
-
-label {
-    display:inline-block;
-    width: 86px;
-    text-align: center;
-    padding: 4px;
-    font-size: 14px;
-}
-
 #button {
     display:inline-block;
-    width: 188px;
+    width: 478px;
     text-align: center;
     padding: 4px;
-    font-size: 14px;
+    font-size: 16px;
 }
 
 #button:hover {
@@ -165,12 +148,36 @@ label {
     animation: light-gray .5s forwards;
 }
 
+input[type=text] {
+    width: 470px;
+    background: var(--dark);
+    text-align: center;
+    padding: 4px;
+    font-size: 16px;
+    border: none;
+}
+
+input[type=text]:focus, input[type="radio"]:checked + label {
+    background: var(--light);
+}
 input[type="text"]:hover {
     animation: dark-light .5s forwards;
 }
 
 input[type="text"]:not(:hover):not(:focus) {
     animation: light-dark .5s forwards;
+}
+
+@media (max-width: 470px) {
+    input[type=text] {
+        width: 367px;
+        font-size: 12px;
+    }
+
+    #button {
+        width: 375px;
+        font-size: 12px;
+    }
 }
 
 #footer {
@@ -186,6 +193,36 @@ input[type="text"]:not(:hover):not(:focus) {
     display: flex;
     flex-flow: row wrap;
     justify-content: space-around;
+}
+
+@keyframes light-dark {
+    from {background-color: var(--light);}
+    to {background-color: var(--dark);}
+}
+
+@keyframes dark-light {
+    from {background-color: var(--dark);}
+    to {background-color: var(--light);}
+}
+
+@keyframes gray-light {
+    from {background-color: var(--gray);}
+    to {background-color: var(--light);}
+}
+
+@keyframes light-gray {
+    from {background-color: var(--light);}
+    to {background-color: var(--gray);}
+}
+
+@keyframes text-pop {
+    from {color: var(--text);}
+    to {color: var(--pop);}
+}
+
+@keyframes pop-text {
+    from {color: var(--pop);}
+    to {color: var(--text);}
 }
 
 ::-webkit-scrollbar {
