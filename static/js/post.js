@@ -44,14 +44,15 @@ $(document).ready(function() {
         }
     })
 
-    document.getElementById('textbox').value = "S76561198261551396A9067619073D14604201839850564398";
-    document.getElementById('button').click();
 
     if (window.location.hash) {
         var hashURL = window.location.hash.substring(1);
         document.getElementById('textbox').value = hashURL;
-        $("#button")[0].click();
+    } else {
+        document.getElementById('textbox').value = "S76561198261551396A9067619073D14604201839850564398";
     }
+
+    document.getElementById('button').click();
 });
 
 function post(requestData) {
