@@ -11,13 +11,12 @@ This repository has 3 external dependencies. These are:
 
 ### Installation and Setup
 
-After cloning this repository, create environment variables named 'steam_user' and 'steam_pass'. I imagine their contents are self explanatory.
+After cloning this repository, simply run the skinstats module with Python 3. If you have set the environment variables `steam_user` and `steam_pass`, it will use those. Otherwise, you will be prompted to input those manuallyi. The page will be on localhost:5000.
 
 Run skinstats.py with Python 3 to start the application. The page will be on localhost:5000.
 
 #### TODO
 
-+ database support rather than memoization
-+ pep8
++ database support
 + remove json dependency
 + more i'm likely forgetting...
