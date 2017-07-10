@@ -7,7 +7,7 @@ import os
 
 import logging
 logging.basicConfig(format="%(asctime)s | %(name)s | %(message)s", level=logging.INFO)
-LOG = logging.getLogger('SimpleWebAPI')
+LOG = logging.getLogger('CSGO GC API')
 
 app = Flask('CSGO GC API')
 
@@ -35,9 +35,9 @@ def displayInventory():
 
 
 if __name__ == "__main__":
-    LOG.info("Simple Web API recipe")
-    LOG.info("-"*30)
-    LOG.info("Starting Steam worker...")
+    LOG.info("csgoSkinStatistics")
+    LOG.info("-"*18)
+    LOG.info("Starting worker...")
 
     worker = CSGOWorker()
 
