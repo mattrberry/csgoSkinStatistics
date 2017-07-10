@@ -1,13 +1,13 @@
-from flask import Flask, render_template, Markup, request
-import os
+from getpass import getpass
+from gevent.wsgi import WSGIServer
 from csgo_worker import CSGOWorker
+from flask import Flask, request, abort, jsonify, render_template
 
 import logging
 logging.basicConfig(format="%(asctime)s | %(name)s | %(message)s", level=logging.INFO)
-LOG = logging.getLogger('csgo gc api')
+LOG = logging.getLogger('SimpleWebAPI')
 
 app = Flask('CSGO GC API')
-
 
 @app.route('/')
 def home():
@@ -20,7 +20,7 @@ def displayInventory():
     a = int(request.form['a'])
     d = int(request.form['d'])
     m = int(request.form['m'])
-    
+
     try:
         iteminfo = worker.send(s, a, d, m)
     except TypeError:
@@ -30,16 +30,24 @@ def displayInventory():
 
     return str(iteminfo)
 
-LOG.info('simple csgo gc')
-LOG.info('--------------')
-LOG.info('starting worker')
 
-worker = CSGOWorker()
+if __name__ == "__main__":
+    LOG.info("Simple Web API recipe")
+    LOG.info("-"*30)
+    LOG.info("Starting Steam worker...")
 
-worker.start()
+    worker = CSGOWorker()
 
-LOG.info('starting server')
-    
-if __name__ == '__main__':
-    app.run()
-    worker.close()
+    try:
+        worker.start(username=input('Username: '), password=getpass())
+    except:
+        raise SystemExit
+
+    LOG.info("Starting HTTP server...")
+    http_server = WSGIServer(('', 5000), app)
+
+    try:
+        http_server.serve_forever()
+    except KeyboardInterrupt:
+        LOG.info("Exit requested")
+        worker.close()

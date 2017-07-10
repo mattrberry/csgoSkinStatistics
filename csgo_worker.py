@@ -11,33 +11,9 @@ from skinData import fades, order, doppler
 import collections
 import functools
 
-class memoized(object):
-    '''Decorator. Caches a function's return value each time it is called.
-    If called later with the same arguments, the cached value is returned
-    (not reevaluated).
-    '''
-    def __init__(self, func):
-        self.func = func
-        self.cache = {}
-    def __call__(self, *args):
-        if not isinstance(args, collections.Hashable):
-            # uncacheable. a list, for instance.
-            # better to not cache than blow up.
-            return self.func(*args)
-        if args in self.cache:
-            return self.cache[args]
-        else:
-            value = self.func(*args)
-            self.cache[args] = value
-            return value
-    def __repr__(self):
-        '''Return the function's docstring.'''
-        return self.func.__doc__
-    def __get__(self, obj, objtype):
-        '''Support instance methods.'''
-        return functools.partial(self.__call__, obj)
 
-LOG = logging.getLogger('CSGO Worker')
+LOG = logging.getLogger("CSGO Worker")
+
 
 class CSGOWorker(object):
     def __init__(self):
@@ -70,11 +46,12 @@ class CSGOWorker(object):
             LOG.info('launched csgo')
             pass
 
-    def start(self):
+
+    def start(self, username, password):
         self.logon_details = {
-                'username': os.environ['steam_user'],
-                'password': os.environ['steam_pass'],
-                }
+            'username': username,
+            'password': password,
+            }
 
         self.steam.connect()
         self.steam.wait_event('logged_on')
@@ -85,7 +62,6 @@ class CSGOWorker(object):
             self.steam.logout()
         LOG.info('logged out')
 
-    @memoized
     def send(self, s, a, d, m):
         LOG.info('sending s:{} a:{} d:{} m:{}'.format(s, a, d, m))
 
@@ -140,3 +116,4 @@ class CSGOWorker(object):
                 }
 
         return iteminfo
+
