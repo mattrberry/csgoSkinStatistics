@@ -180,21 +180,6 @@ input[type="text"]:not(:hover):not(:focus) {
     }
 }
 
-#footer {
-    position: absolute;
-    left: 0;
-    bottom: 0;
-    width: 100%;
-    text-align: center;
-
-    margin: 0;
-    padding: 4px 0px 4px 0px;
-
-    display: flex;
-    flex-flow: row wrap;
-    justify-content: space-around;
-}
-
 @keyframes light-dark {
     from {background-color: var(--light);}
     to {background-color: var(--dark);}
