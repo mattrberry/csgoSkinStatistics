@@ -4,6 +4,7 @@ from csgo_worker import CSGOWorker
 from flask import Flask, request, abort, jsonify, render_template
 
 import os
+import sys
 
 import logging
 logging.basicConfig(format="%(asctime)s | %(name)s | %(message)s", level=logging.INFO)
@@ -45,9 +46,12 @@ if __name__ == "__main__":
         worker.start(username=os.environ['steam_user'], password=os.environ['steam_pass'])
     except:
         try:
-            worker.start(username=input('Username: '), password=getpass())
+            worker.start(username=sys.argv[1], password=sys.argv[2])
         except:
-            raise SystemExit
+            try:
+                worker.start(username=input('Username: '), password=getpass())
+            except:
+                raise SystemExit
 
     LOG.info("Starting HTTP server...")
     http_server = WSGIServer(('', 5000), app)
