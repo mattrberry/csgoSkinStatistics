@@ -49,7 +49,7 @@ $(document).ready(function() {
         var hashURL = window.location.hash.substring(1);
         document.getElementById('textbox').value = hashURL;
     } else {
-        document.getElementById('textbox').value = "S76561198261551396A9067619073D14604201839850564398";
+        document.getElementById('textbox').value = "S76561198261551396A9716592909D9549395284300371856";
     }
 
     document.getElementById('button').click();
