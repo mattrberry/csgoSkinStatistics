@@ -20,6 +20,9 @@ class CSGOWorker(object):
         self.steam = client = SteamClient()
         self.csgo = cs = CSGOClient(self.steam)
 
+        self.request_method = ECsgoGCMsg.EMsgGCCStrike15_v2_Client2GCEconPreviewDataBlockRequest
+        self.response_method = ECsgoGCMsg.EMsgGCCStrike15_v2_Client2GCEconPreviewDataBlockResponse
+
         with open('json/itemDB.json') as f:
             self.itemDB = json.load(f, encoding='utf-8')
 
@@ -46,7 +49,6 @@ class CSGOWorker(object):
             LOG.info('launched csgo')
             pass
 
-
     def start(self, username, password):
         self.logon_details = {
             'username': username,
@@ -65,14 +67,14 @@ class CSGOWorker(object):
     def send(self, s, a, d, m):
         LOG.info('sending s:{} a:{} d:{} m:{}'.format(s, a, d, m))
 
-        self.csgo.send(ECsgoGCMsg.EMsgGCCStrike15_v2_Client2GCEconPreviewDataBlockRequest, {
+        self.csgo.send(self.request_method, {
             'param_s': s,
             'param_a': a,
             'param_d': d,
             'param_m': m,
             })
 
-        resp = self.csgo.wait_event(ECsgoGCMsg.EMsgGCCStrike15_v2_Client2GCEconPreviewDataBlockResponse, timeout=1)
+        resp = self.csgo.wait_event(self.response_method, timeout=1)
 
         if resp is None:
             LOG.info('csgo failed to respond')
@@ -80,12 +82,12 @@ class CSGOWorker(object):
 
         resp_iteminfo = resp[0].iteminfo
 
-        paintwear   = struct.unpack('f', struct.pack('i', resp_iteminfo.paintwear))[0]
+        paintwear = struct.unpack('f', struct.pack('i', resp_iteminfo.paintwear))[0]
         weapon_type = self.itemDB['item'][str(resp_iteminfo.defindex)]
-        pattern     = self.skinDB['skin'][str(resp_iteminfo.paintindex)]
-        name        = "{} | {}".format(weapon_type, pattern)
-        paintseed   = resp_iteminfo.paintseed
-        special     = ""
+        pattern = self.skinDB['skin'][str(resp_iteminfo.paintindex)]
+        name = "{} | {}".format(weapon_type, pattern)
+        paintseed = resp_iteminfo.paintseed
+        special = ""
 
         if pattern == "Marble Fade":
             try:
@@ -116,4 +118,3 @@ class CSGOWorker(object):
                 }
 
         return iteminfo
-
