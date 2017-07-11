@@ -10,6 +10,7 @@ from skinData import fades, order, doppler
 
 import collections
 import functools
+import ast
 
 
 LOG = logging.getLogger("CSGO Worker")
@@ -65,6 +66,15 @@ class CSGOWorker(object):
         LOG.info('logged out')
 
     def send(self, s, a, d, m):
+        req_str = str(s) + str(a) + str(d) + str(m)
+        LOG.info(req_str)
+
+        with open('searches.txt') as searches:
+            for search in searches:
+                if search.split()[0] == req_str:
+                    LOG.info('found s:{} a:{} d:{} m:{} in search.txt'.format(s, a, d, m))
+                    return ast.literal_eval(' '.join(search.split()[1:]))
+
         LOG.info('sending s:{} a:{} d:{} m:{}'.format(s, a, d, m))
 
         self.csgo.send(self.request_method, {
@@ -116,5 +126,9 @@ class CSGOWorker(object):
                 'inventory':  resp_iteminfo.inventory,
                 'origin':     resp_iteminfo.origin,
                 }
+
+
+        with open('searches.txt', 'a') as searches:
+            searches.write(req_str + ' ' + str(iteminfo) + '\n')
 
         return iteminfo
