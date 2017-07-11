@@ -5,8 +5,7 @@ from csgo import CSGOClient
 from csgo.enums import ECsgoGCMsg
 import struct
 import os
-import json
-from skinData import fades, order, doppler
+import const
 
 import ast
 
@@ -21,15 +20,6 @@ class CSGOWorker(object):
 
         self.request_method = ECsgoGCMsg.EMsgGCCStrike15_v2_Client2GCEconPreviewDataBlockRequest
         self.response_method = ECsgoGCMsg.EMsgGCCStrike15_v2_Client2GCEconPreviewDataBlockResponse
-
-        with open('json/itemDB.json') as f:
-            self.itemDB = json.load(f, encoding='utf-8')
-
-        with open('json/skinDB.json') as f:
-            self.skinDB = json.load(f, encoding='utf-8')
-
-        with open('json/patternDB.json') as f:
-            self.patternDB = json.load(f, encoding='utf-8')
 
         @client.on('channel_secured')
         def send_login():
@@ -91,25 +81,28 @@ class CSGOWorker(object):
         resp_iteminfo = resp[0].iteminfo
 
         paintwear = struct.unpack('f', struct.pack('i', resp_iteminfo.paintwear))[0]
-        weapon_type = self.itemDB['item'][str(resp_iteminfo.defindex)]
-        pattern = self.skinDB['skin'][str(resp_iteminfo.paintindex)]
+        weapon_type = const.items[str(resp_iteminfo.defindex)]
+        pattern = const.skins[str(resp_iteminfo.paintindex)]
+        #pattern = self.skinDB['skin'][str(resp_iteminfo.paintindex)]
         name = "{} | {}".format(weapon_type, pattern)
-        paintseed = resp_iteminfo.paintseed
+        paintseed = str(resp_iteminfo.paintseed)
         special = ""
 
         if pattern == "Marble Fade":
             try:
-                special = self.patternDB[weapon_type][pattern][paintseed]
+                LOG.info(weapon_type)
+                special = const.marbles[weapon_type][paintseed]
+                #special = self.patternDB[weapon_type][pattern][paintseed]
             except KeyError:
                 LOG.info("non-indexed marble fade")
-        elif pattern == "Fade" and weapon_type in fades:
-            info = fades[weapon_type]
-            unscaled = order[::info[1]].index(int(paintseed))
+        elif pattern == "Fade" and weapon_type in const.fades:
+            info = const.fades[weapon_type]
+            unscaled = const.order[::info[1]].index(int(paintseed))
             scaled = unscaled / 1001
             percentage = round(info[0] + scaled * (100 - info[0]))
             special = str(percentage) + "%"
         elif pattern == "Doppler" or pattern == "Gamma Doppler":
-            special = doppler[resp_iteminfo.paintindex]
+            special = const.doppler[resp_iteminfo.paintindex]
 
         iteminfo = {
                 'name':       name,
