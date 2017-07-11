@@ -1,7 +1,7 @@
 from getpass import getpass
 from gevent.wsgi import WSGIServer
 from csgo_worker import CSGOWorker
-from flask import Flask, request, abort, jsonify, render_template
+from flask import Flask, request, render_template
 
 import os
 import sys

@@ -8,8 +8,6 @@ import os
 import json
 from skinData import fades, order, doppler
 
-import collections
-import functools
 import ast
 
 
