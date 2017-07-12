@@ -4,10 +4,14 @@ function display(data, loadTime) {
 
         document.getElementById('item_name').innerHTML = iteminfo.name + " <span class=\"pop\">" + iteminfo.special + "</span>";
         document.getElementById('item_paintwear').innerHTML = iteminfo.paintwear;
+        document.getElementById('item_itemid').innerHTML = iteminfo.itemid;
+        document.getElementById('item_paintseed').innerHTML = iteminfo.paintseed;
         document.getElementById('status').innerHTML = "Loaded in " + loadTime + " seconds";
     } catch (e) {
         document.getElementById('item_name').innerHTML = "-";
         document.getElementById('item_paintwear').innerHTML = '-';
+        document.getElementById('item_itemid').innerHTML = '-';
+        document.getElementById('item_paintseed').innerHTML = '-';
         document.getElementById('status').innerHTML = data;
     }
 }
