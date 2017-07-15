@@ -7,7 +7,8 @@ import os
 import sys
 
 import logging
-logging.basicConfig(format="%(asctime)s | %(name)s | %(message)s", level=logging.INFO)
+logging.basicConfig(format="%(asctime)s | %(name)s | %(message)s",
+                    level=logging.INFO)
 LOG = logging.getLogger('CSGO GC API')
 
 app = Flask('CSGO GC API')
@@ -30,8 +31,6 @@ def displayInventory():
     except TypeError:
         return 'Invalid link or Steam is slow.'
 
-    LOG.info('returning: {}'.format(str(iteminfo)))
-
     return str(iteminfo)
 
 
@@ -43,7 +42,8 @@ if __name__ == "__main__":
     worker = CSGOWorker()
 
     try:
-        worker.start(username=os.environ['steam_user'], password=os.environ['steam_pass'])
+        worker.start(username=os.environ['steam_user'],
+                     password=os.environ['steam_pass'])
     except:
         try:
             worker.start(username=sys.argv[1], password=sys.argv[2])
