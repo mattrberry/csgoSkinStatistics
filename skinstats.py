@@ -11,7 +11,7 @@ logging.basicConfig(format="%(asctime)s | %(name)s | %(message)s",
                     level=logging.INFO)
 LOG = logging.getLogger('CSGO GC API')
 
-app = Flask('CSGO GC API')
+app = Flask('Flask Server')
 
 
 @app.route('/')
