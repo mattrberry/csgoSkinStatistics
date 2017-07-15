@@ -43,11 +43,15 @@ body {
 
 #info_container {
     max-width: 660px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
 }
 
 .info_item {
     text-align: center;
     width: 260px;
+    margin: 4px;
 }
 
 .item_title {
@@ -176,7 +180,6 @@ input[type="text"]:not(:hover):not(:focus) {
 
     #button {
         width: 375px;
-        font-size: 12px;
     }
 }
 
