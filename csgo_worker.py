@@ -30,12 +30,12 @@ class CSGOWorker(object):
 
         @client.on('logged_on')
         def start_csgo():
-            LOG.info('steam login success')
+            LOG.info('Logged into Steam')
             self.csgo.launch()
 
         @cs.on('ready')
         def gc_ready():
-            LOG.info('launched csgo')
+            LOG.info('Launched CSGO')
             pass
 
     def start(self, username, password):
@@ -51,19 +51,18 @@ class CSGOWorker(object):
     def close(self):
         if self.steam.connected:
             self.steam.logout()
-        LOG.info('logged out')
+        LOG.info('Logged out')
 
     def send(self, s, a, d, m):
-        req_str = str(s) + str(a) + str(d) + str(m)
-        LOG.info(req_str)
+        LOG.info('Checking item {}'.format(a))
 
         with open('searches.txt') as searches:
             for search in searches:
-                if search.split()[0] == req_str:
-                    LOG.info('found s:{} a:{} d:{} m:{} in search.txt'.format(s, a, d, m))
+                if search.split()[0] == str(a):
+                    LOG.info('Found item {} in searches.txt'.format(a))
                     return ast.literal_eval(' '.join(search.split()[1:]))
 
-        LOG.info('sending s:{} a:{} d:{} m:{}'.format(s, a, d, m))
+        LOG.info('Sending s:{} a:{} d:{} m:{} to GC'.format(s, a, d, m))
 
         self.csgo.send(self.request_method, {
             'param_s': s,
@@ -75,15 +74,15 @@ class CSGOWorker(object):
         resp = self.csgo.wait_event(self.response_method, timeout=1)
 
         if resp is None:
-            LOG.info('csgo failed to respond')
+            LOG.info('CSGO failed to respond')
             raise TypeError
 
         resp_iteminfo = resp[0].iteminfo
 
-        paintwear = struct.unpack('f', struct.pack('i', resp_iteminfo.paintwear))[0]
+        paintwear = struct.unpack('f', struct.pack('i',
+                                                   resp_iteminfo.paintwear))[0]
         weapon_type = const.items[str(resp_iteminfo.defindex)]
         pattern = const.skins[str(resp_iteminfo.paintindex)]
-        #pattern = self.skinDB['skin'][str(resp_iteminfo.paintindex)]
         name = "{} | {}".format(weapon_type, pattern)
         paintseed = str(resp_iteminfo.paintseed)
         special = ""
@@ -92,9 +91,8 @@ class CSGOWorker(object):
             try:
                 LOG.info(weapon_type)
                 special = const.marbles[weapon_type][paintseed]
-                #special = self.patternDB[weapon_type][pattern][paintseed]
             except KeyError:
-                LOG.info("non-indexed marble fade")
+                LOG.info("Non-indexed marble fade")
         elif pattern == "Fade" and weapon_type in const.fades:
             info = const.fades[weapon_type]
             unscaled = const.order[::info[1]].index(int(paintseed))
@@ -118,8 +116,7 @@ class CSGOWorker(object):
                 'origin':     resp_iteminfo.origin,
                 }
 
-
         with open('searches.txt', 'a') as searches:
-            searches.write(req_str + ' ' + str(iteminfo) + '\n')
+            searches.write(str(a) + ' ' + str(iteminfo) + '\n')
 
         return iteminfo
