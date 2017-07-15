@@ -30,6 +30,15 @@ html {
     outline: none;
 }
 
+.github-corner > svg {
+    fill: var(--dark);
+    color: var(--gray);
+    position: absolute;
+    top: 0;
+    border: 0;
+    right: 0;
+}
+
 body {
     min-height: 100%;
     margin: 0;
@@ -127,6 +136,7 @@ ul.nav {
 
 input {
     border: none;
+    border-radius: 4px;
     color: var(--text);
     font-family: Lato, sans-serif;
 }
@@ -138,7 +148,7 @@ input[type=button] {
 
 #button {
     display:inline-block;
-    width: 478px;
+    width: 528px;
     text-align: center;
     padding: 4px;
     font-size: 16px;
@@ -153,7 +163,7 @@ input[type=button] {
 }
 
 input[type=text] {
-    width: 470px;
+    width: 520px;
     background: var(--dark);
     text-align: center;
     padding: 4px;
@@ -172,14 +182,14 @@ input[type="text"]:not(:hover):not(:focus) {
     animation: light-dark .5s forwards;
 }
 
-@media (max-width: 470px) {
+@media (max-width: 536px) {
     input[type=text] {
-        width: 367px;
+        width: calc(100vw - 8px);
         font-size: 12px;
     }
 
     #button {
-        width: 375px;
+        width: 100vw;
     }
 }
 
