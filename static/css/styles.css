@@ -30,7 +30,7 @@ html {
     outline: none;
 }
 
-.github-corner > svg {
+.github-corner svg {
     fill: var(--dark);
     color: var(--gray);
     position: absolute;
