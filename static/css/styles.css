@@ -35,8 +35,8 @@ html {
     position: absolute;
     top: 0;
     left: 0;
-    margin: 2px;
-    font-size: 12px;
+    margin: 4px;
+    font-size: 14px;
 }
 
 .github-corner svg {
