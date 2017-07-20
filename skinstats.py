@@ -48,7 +48,7 @@ if __name__ == "__main__":
         try:
             worker.start(username=sys.argv[1], password=sys.argv[2])
         except:
-            raise SystemExit
+            sys.exit()
 
     LOG.info("Starting HTTP server...")
     http_server = WSGIServer(('', 5000), app)
