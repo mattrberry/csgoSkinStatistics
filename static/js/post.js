@@ -73,7 +73,7 @@ function ping() {
     var start = performance.now();
     $.post("/ping", "ping").done(function (response) {
         if (response == "pong") {
-            document.getElementById('ping').innerHTML = "Ping:" + Math.round((performance.now() - start)).toString() + 'ms';
+            document.getElementById('ping').innerHTML = "Ping:" + Math.floor((performance.now() - start)).toString() + 'ms';
         }
     });
 }
