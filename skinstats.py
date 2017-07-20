@@ -16,7 +16,7 @@ app = Flask('Flask Server')
 
 @app.route('/')
 def home():
-    return render_template('index.html', info_location="")
+    return render_template('index.html')
 
 
 @app.route('/displayInventory', methods=["POST"])
