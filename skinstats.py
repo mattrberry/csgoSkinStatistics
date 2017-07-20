@@ -1,7 +1,7 @@
 from getpass import getpass
 from gevent.wsgi import WSGIServer
 from csgo_worker import CSGOWorker
-from flask import Flask, request, render_template
+from flask import Flask, request
 
 import os
 import sys
@@ -16,7 +16,7 @@ app = Flask('Flask Server')
 
 @app.route('/')
 def home():
-    return render_template('index.html')
+    return app.send_static_file('index.html')
 
 
 @app.route('/displayInventory', methods=["POST"])
