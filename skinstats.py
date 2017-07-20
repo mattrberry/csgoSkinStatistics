@@ -34,6 +34,11 @@ def displayInventory():
     return str(iteminfo)
 
 
+@app.route('/ping', methods=["POST"])
+def ping():
+    return 'pong'
+
+
 if __name__ == "__main__":
     LOG.info("csgoSkinStatistics")
     LOG.info("-"*18)

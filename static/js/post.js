@@ -56,6 +56,9 @@ $(document).ready(function() {
         document.getElementById('textbox').value = "S76561198261551396A9716592909D9549395284300371856";
     }
 
+    ping();
+    setInterval(ping, 30000);
+
     document.getElementById('button').click();
 });
 
@@ -63,5 +66,14 @@ function post(requestData) {
     var start = performance.now();
     $.post("/displayInventory", requestData).done(function (data) {
         display(data, ((performance.now()- start)/1000).toFixed(2));
+    });
+}
+
+function ping() {
+    var start = performance.now();
+    $.post("/ping", "ping").done(function (response) {
+        if (response == "pong") {
+            document.getElementById('ping').innerHTML = "Ping:" + Math.round((performance.now() - start)).toString() + 'ms';
+        }
     });
 }
