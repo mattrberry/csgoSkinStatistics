@@ -82,7 +82,11 @@ class CSGOWorker(object):
         paintwear = struct.unpack('f', struct.pack('i',
                                                    resp_iteminfo.paintwear))[0]
         weapon_type = const.items[str(resp_iteminfo.defindex)]
-        pattern = const.skins[str(resp_iteminfo.paintindex)]
+        try:
+            pattern = const.skins[str(resp_iteminfo.paintindex)]
+        except:
+            LOG.info("Pattern not found. Either vanilla skin or skin missing from db.")
+            pattern = 'Vanilla'
         name = "{} | {}".format(weapon_type, pattern)
         paintseed = str(resp_iteminfo.paintseed)
         special = ""
