@@ -50,9 +50,11 @@ if __name__ == "__main__":
         worker.start(username=os.environ['steam_user'],
                      password=os.environ['steam_pass'])
     except:
+        LOG.info('Failed with environment variables. Trying args...')
         try:
             worker.start(username=sys.argv[1], password=sys.argv[2])
         except:
+            LOG.info('Failed with args. Exiting...')
             sys.exit()
 
     LOG.info("Starting HTTP server...")
