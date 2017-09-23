@@ -85,8 +85,11 @@ class CSGOWorker(object):
         try:
             pattern = const.skins[str(resp_iteminfo.paintindex)]
         except:
-            LOG.info("Pattern not found. Either vanilla skin or skin missing from db.")
-            pattern = 'Vanilla'
+            if resp_iteminfo.paintindex > 0:
+                LOG.info('Pattern {} missing from database')
+                pattern = str(resp_iteminfo.paintindex)
+            else:
+                pattern = 'Vanilla'
         name = "{} | {}".format(weapon_type, pattern)
         paintseed = str(resp_iteminfo.paintseed)
         special = ""
