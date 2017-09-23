@@ -44,7 +44,7 @@ $(document).ready(function() {
 
             post(requestData);
         } catch (e) {
-            document.getElementById('display').innerHTML = "<p>Not a valid inspect link</p>";
+            document.getElementById('textbox').value = "Not a valid inspect link";
         }
     })
 
