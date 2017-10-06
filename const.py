@@ -25,7 +25,8 @@ doppler = {
     569:'Phase 1',
     570:'Phase 2',
     571:'Phase 3',
-    572:'Phase 4'
+    572:'Phase 4',
+    619:'Sapphire'
 }
 
 skins = {
@@ -560,6 +561,7 @@ skins = {
     "614":"Fuel Injector",
     "615":"Briefing",
     "616":"Slipstream",
+    "619":"Doppler",
     "622":"Polymer",
     "623":"Ironwork",
     "624":"Dragonfire",
