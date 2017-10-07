@@ -127,4 +127,4 @@ class CSGOWorker(object):
         with open('searches.txt', 'a') as searches:
             searches.write(str(a) + ' ' + json.dumps(iteminfo) + '\n')
 
-        return iteminfo
+        return json.dumps(iteminfo)
