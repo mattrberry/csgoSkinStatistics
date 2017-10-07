@@ -1,6 +1,6 @@
 function display(data, loadTime) {
     try {
-        iteminfo = JSON.parse(data.split("'").join("\""));
+        iteminfo = JSON.parse(data);
 
         document.getElementById('item_name').innerHTML = iteminfo.name + " <span class=\"pop\">" + iteminfo.special + "</span>";
         document.getElementById('item_paintwear').innerHTML = iteminfo.paintwear;
