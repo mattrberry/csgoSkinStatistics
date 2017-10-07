@@ -6,6 +6,7 @@ from csgo.enums import ECsgoGCMsg
 import struct
 import os
 import const
+import json
 
 import ast
 
@@ -60,7 +61,7 @@ class CSGOWorker(object):
             for search in searches:
                 if search.split()[0] == str(a):
                     LOG.info('Found item {} in searches.txt'.format(a))
-                    return ast.literal_eval(' '.join(search.split()[1:]))
+                    return ' '.join(search.split()[1:])
 
         LOG.info('Sending s:{} a:{} d:{} m:{} to GC'.format(s, a, d, m))
 
@@ -124,6 +125,6 @@ class CSGOWorker(object):
                 }
 
         with open('searches.txt', 'a') as searches:
-            searches.write(str(a) + ' ' + str(iteminfo) + '\n')
+            searches.write(str(a) + ' ' + json.dumps(iteminfo) + '\n')
 
         return iteminfo
