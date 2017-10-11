@@ -98,14 +98,15 @@ body {
 
 #stattrak-indicator {
     position: absolute;
-    top: -12px;
-    left: -14px;
+    top: 0;
+    left: -12px;
     max-height: 0;
     transition: all .5s;
 }
 
 #stattrak-indicator.yes {
     max-height: 28px;
+    top: -14px;
 }
 
 #container {
