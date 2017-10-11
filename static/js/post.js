@@ -7,11 +7,14 @@ function display(data, loadTime) {
         document.getElementById('item_itemid').innerHTML = iteminfo.itemid;
         document.getElementById('item_paintseed').innerHTML = iteminfo.paintseed;
         document.getElementById('status').innerHTML = "Loaded in " + loadTime + " seconds";
+        document.getElementById('stattrak-indicator').classList.remove('yes');
+        document.getElementById('stattrak-indicator').classList.add(iteminfo.stattrak);
     } catch (e) {
         document.getElementById('item_name').innerHTML = "-";
         document.getElementById('item_paintwear').innerHTML = '-';
         document.getElementById('item_itemid').innerHTML = '-';
         document.getElementById('item_paintseed').innerHTML = '-';
+        document.getElementById('stattrak-indicator').classList.remove('yes');
         document.getElementById('status').innerHTML = data;
     }
 }

@@ -80,6 +80,7 @@ body {
 .item_desc {
     background-color: var(--dark);
     border-radius: 4px;
+    position: relative;
 }
 
 .item_desc > p {
@@ -93,6 +94,18 @@ body {
 
 .item_desc:not(:hover) {
     animation: pop-text .5s forwards;
+}
+
+#stattrak-indicator {
+    position: absolute;
+    top: -12px;
+    left: -14px;
+    max-height: 0;
+    transition: all .5s;
+}
+
+#stattrak-indicator.yes {
+    max-height: 28px;
 }
 
 #container {

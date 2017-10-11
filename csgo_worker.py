@@ -110,6 +110,11 @@ class CSGOWorker(object):
         elif pattern == "Doppler" or pattern == "Gamma Doppler":
             special = const.doppler[resp_iteminfo.paintindex]
 
+        if 'killeatervalue' in str(resp_iteminfo):
+            stattrak = 'yes'
+        else:
+            stattrak = 'no'
+
         iteminfo = {
                 'name':       name,
                 'special':    special,
@@ -122,6 +127,7 @@ class CSGOWorker(object):
                 'paintseed':  resp_iteminfo.paintseed,
                 'inventory':  resp_iteminfo.inventory,
                 'origin':     resp_iteminfo.origin,
+                'stattrak':   stattrak,
                 }
 
         with open('searches.txt', 'a') as searches:
