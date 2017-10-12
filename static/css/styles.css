@@ -110,10 +110,8 @@ body {
 }
 
 .knife::before {
-    content: "\066D  ";
+    content: "\2605  ";
     color: var(--pop);
-    font-size: 22px;
-    line-height: 16px;
 }
 
 #container {
