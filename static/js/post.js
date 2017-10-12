@@ -3,6 +3,10 @@ function display(data, loadTime) {
         iteminfo = JSON.parse(data);
 
         document.getElementById('item_name').innerHTML = iteminfo.name + " <span class=\"pop\">" + iteminfo.special + "</span>";
+        document.getElementById('item_name').classList.remove('knife');
+        if (isKnife(iteminfo.name)) {
+            document.getElementById('item_name').classList.add('knife');
+        }
         document.getElementById('item_paintwear').innerHTML = iteminfo.paintwear;
         document.getElementById('item_itemid').innerHTML = iteminfo.itemid;
         document.getElementById('item_paintseed').innerHTML = iteminfo.paintseed;
@@ -11,6 +15,7 @@ function display(data, loadTime) {
         document.getElementById('stattrak-indicator').classList.add(iteminfo.stattrak);
     } catch (e) {
         document.getElementById('item_name').innerHTML = "-";
+        document.getElementById('item_name').classList.remove('knife');
         document.getElementById('item_paintwear').innerHTML = '-';
         document.getElementById('item_itemid').innerHTML = '-';
         document.getElementById('item_paintseed').innerHTML = '-';
@@ -56,7 +61,7 @@ $(document).ready(function() {
         var hashURL = window.location.hash.substring(1);
         document.getElementById('textbox').value = hashURL;
     } else {
-        document.getElementById('textbox').value = "S76561198261551396A9716592909D9549395284300371856";
+        document.getElementById('textbox').value = "S76561198261551396A12256887280D2776544801323831695";
     }
 
     ping();
@@ -79,4 +84,12 @@ function ping() {
             document.getElementById('ping').innerHTML = "Ping:" + Math.floor((performance.now() - start)).toString() + 'ms';
         }
     });
+}
+
+var knifes = ['Bayonet', 'Butterfly Knife', 'Falchion Knife', 'Flip Knife', 'Gut Knife',
+          'Huntsman Knife', 'Karambit', 'M9 Bayonet', 'Shadow Daggers', 'Bowie Knife']
+
+function isKnife(item_name) {
+    var item_type = item_name.split(' | ')[0];
+    return knifes.indexOf(item_type) > -1;
 }
