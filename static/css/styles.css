@@ -68,7 +68,7 @@ body {
 
 .info_item {
     text-align: center;
-    width: 260px;
+    width: 280px;
     margin: 4px;
 }
 
@@ -107,6 +107,13 @@ body {
 #stattrak-indicator.yes {
     max-height: 28px;
     top: -14px;
+}
+
+.knife::before {
+    content: "\066D  ";
+    color: var(--pop);
+    font-size: 22px;
+    line-height: 16px;
 }
 
 #container {
@@ -171,7 +178,7 @@ input[type=button] {
 
 #button {
     display:inline-block;
-    width: 528px;
+    width: 568px;
     text-align: center;
     padding: 4px;
     font-size: 16px;
@@ -186,7 +193,7 @@ input[type=button] {
 }
 
 input[type=text] {
-    width: 520px;
+    width: 560px;
     background: var(--dark);
     text-align: center;
     padding: 4px;
