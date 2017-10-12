@@ -120,6 +120,10 @@ body {
     margin: 0 auto;
 }
 
+#status_outer {
+    margin-bottom: 30px;
+}
+
 #status {
     text-align: center;
     padding: 4px;
