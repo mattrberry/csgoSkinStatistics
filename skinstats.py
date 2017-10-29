@@ -1,4 +1,3 @@
-from getpass import getpass
 from gevent.wsgi import WSGIServer
 from csgo_worker import CSGOWorker
 from flask import Flask, request, current_app
@@ -19,12 +18,12 @@ def home():
     return current_app.send_static_file('index.html')
 
 
-@app.route('/displayInventory', methods=["POST"])
-def displayInventory():
-    s = int(request.form['s'])
-    a = int(request.form['a'])
-    d = int(request.form['d'])
-    m = int(request.form['m'])
+@app.route('/item', methods=["POST"])
+def item() -> str:
+    s = int(request.json['s'])
+    a = int(request.json['a'])
+    d = int(request.json['d'])
+    m = int(request.json['m'])
 
     try:
         iteminfo = worker.send(s, a, d, m)
@@ -35,7 +34,7 @@ def displayInventory():
 
 
 @app.route('/ping', methods=["POST"])
-def ping():
+def ping() -> str:
     return 'pong'
 
 
