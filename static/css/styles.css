@@ -144,28 +144,6 @@ a, a:visited, a:hover, a:focus, a:active {
     color: var(--text);
 }
 
-ul.nav {
-    width:100%;
-    margin:0 auto;
-    padding:0;
-    list-style:none;
-    text-align:center;
-    position: fixed;
-    bottom: 0;
-    left: 0;
-}
-.nav li { 
-    display:inline-block;
-    width:32%;
-    margin:0;
-    padding:0;
-}
-.nav a {
-    text-align:center;
-    margin:0;
-    display:block;
-}
-
 input {
     border: none;
     border-radius: 4px;
@@ -253,27 +231,4 @@ input[type="text"]:not(:hover):not(:focus) {
 @keyframes pop-text {
     from {color: var(--pop);}
     to {color: var(--text);}
-}
-
-::-webkit-scrollbar {
-    width: 16px;
-    height: 16px;
-}
-
-::-webkit-scrollbar-button {
-    width: 0;
-    height: 0;
-}
-
-::-webkit-scrollbar-thumb {
-    background: var(--dark);
-    border-radius: 100px;
-}
-
-::-webkit-scrollbar-thumb:hover, ::-webkit-scrollbar-thumb:active {
-    background: var(--light);
-}
-
-::-webkit-scrollbar-track {
-    border-radius: 100px;
 }
