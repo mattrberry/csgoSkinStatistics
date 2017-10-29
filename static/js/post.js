@@ -24,17 +24,19 @@ function display(data, loadTime) {
     }
 }
 
-$(document).ready(function() {
-    $("#textbox").keydown(function(e){
-        if(e.which === 13){
-            $("#button").focus();
+window.onload = function () {
+    document.getElementById("textbox").addEventListener("keydown", function (event) {
+        if (event.keyCode === 13) {
+            event.preventDefault();
+            document.getElementById("button").click();
         }
     });
 
-    $("#button").click(function() {
-        $(this).blur();
+    document.getElementById("button").onclick = function (element) {
+        element.toElement.blur();
 
-        var box = $("#textbox").val();
+        var box = document.getElementById("textbox").value;
+        console.log(box);
 
         try {
             var match = box.match(/([SM])(\d+)A(\d+)D(\d+)$/);
@@ -45,7 +47,7 @@ $(document).ready(function() {
                 a: match[3],
                 d: match[4],
                 m: type === 'S' ? '0' : match[2]
-            }
+            };
 
             document.getElementById('textbox').value = box;
             location.hash = box;
@@ -54,8 +56,7 @@ $(document).ready(function() {
         } catch (e) {
             document.getElementById('textbox').value = "Not a valid inspect link";
         }
-    })
-
+    };
 
     if (window.location.hash) {
         var hashURL = window.location.hash.substring(1);
@@ -68,26 +69,39 @@ $(document).ready(function() {
     setInterval(ping, 30000);
 
     document.getElementById('button').click();
-});
+};
 
 function post(requestData) {
     var start = performance.now();
-    $.post("/displayInventory", requestData).done(function (data) {
-        display(data, ((performance.now()- start)/1000).toFixed(2));
-    });
+
+    var request = new XMLHttpRequest();
+    request.open('POST', '/item', true);
+    request.setRequestHeader('Content-type', 'application/json');
+    request.onreadystatechange = function () {
+        display(request.response, ((performance.now() - start) / 1000).toFixed(2));
+    };
+
+    request.send(JSON.stringify(requestData));
 }
 
 function ping() {
     var start = performance.now();
-    $.post("/ping", "ping").done(function (response) {
-        if (response == "pong") {
-            document.getElementById('ping').innerHTML = "Ping:" + Math.floor((performance.now() - start)).toString() + 'ms';
+
+    var request = new XMLHttpRequest();
+    request.open('POST', '/ping', true);
+    request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    request.onreadystatechange = function () {
+        if (request.readyState === XMLHttpRequest.DONE && request.status === 200 && request.response === 'pong') {
+            console.log(request);
+            document.getElementById('ping').innerHTML = 'Ping:' + Math.floor((performance.now() - start)).toString() + 'ms';
         }
-    });
+    };
+
+    request.send('ping');
 }
 
 var knifes = ['Bayonet', 'Butterfly Knife', 'Falchion Knife', 'Flip Knife', 'Gut Knife',
-          'Huntsman Knife', 'Karambit', 'M9 Bayonet', 'Shadow Daggers', 'Bowie Knife']
+    'Huntsman Knife', 'Karambit', 'M9 Bayonet', 'Shadow Daggers', 'Bowie Knife'];
 
 function isKnife(item_name) {
     var item_type = item_name.split(' | ')[0];
