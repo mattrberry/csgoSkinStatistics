@@ -50,7 +50,7 @@ window.onload = function () {
             };
 
             document.getElementById('textbox').value = box;
-            location.hash = box;
+            window.location.hash = box;
 
             post(requestData);
         } catch (e) {
@@ -61,14 +61,13 @@ window.onload = function () {
     if (window.location.hash) {
         var hashURL = window.location.hash.substring(1);
         document.getElementById('textbox').value = hashURL;
+        document.getElementById('button').click();
     } else {
-        document.getElementById('textbox').value = "S76561198261551396A12256887280D2776544801323831695";
+        post({s:'76561198261551396',a:'12256887280',d:'2776544801323831695',m:'0'});
     }
 
     ping();
     setInterval(ping, 30000);
-
-    document.getElementById('button').click();
 };
 
 function post(requestData) {
