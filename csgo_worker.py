@@ -1,14 +1,10 @@
 import logging
-import gevent
 from steam import SteamClient
 from csgo import CSGOClient
 from csgo.enums import ECsgoGCMsg
 import struct
-import os
 import const
 import json
-
-import ast
 
 
 LOG = logging.getLogger("CSGO Worker")
@@ -39,7 +35,7 @@ class CSGOWorker(object):
             LOG.info('Launched CSGO')
             pass
 
-    def start(self, username, password):
+    def start(self, username: str, password: str):
         self.logon_details = {
             'username': username,
             'password': password,
@@ -54,7 +50,7 @@ class CSGOWorker(object):
             self.steam.logout()
         LOG.info('Logged out')
 
-    def send(self, s, a, d, m):
+    def send(self, s: int, a: int, d: int, m: int) -> str:
         LOG.info('Checking item {}'.format(a))
 
         with open('searches.txt') as searches:
