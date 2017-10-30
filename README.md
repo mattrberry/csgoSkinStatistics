@@ -13,8 +13,9 @@ This repository has 3 external dependencies. These are:
 
 After cloning this repository, simply run the skinstats module with Python 3. If you have set the environment variables `steam_user` and `steam_pass`, it will use those. Otherwise, you will be prompted to input those manually. The page will be on localhost:5000.
 
-### Todo
+### Todo (recent)
 - [x] fix items with apostrophe in name (should come along with previous todo and making response easier to parse)
-- [ ] show if a weapon is stattrak
-- [ ] add more stickers to database
-- [ ] show a weapon's stickers
+- [x] show if a weapon is stattrak
+- [x] switch to actually using a database rather than a flat text file
+- [ ] more servers
+- [ ] load balancing
