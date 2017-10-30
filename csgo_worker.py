@@ -22,8 +22,10 @@ class CSGOWorker(object):
 
         self.connection = sqlite3.connect('searches.db')
         self.cursor = self.connection.cursor()
+        LOG.info('Connected to database')
 
         self.cursor.execute('''CREATE TABLE IF NOT EXISTS searches (itemid integer, defindex integer, paintindex integer, rarity integer, quality integer, paintwear real, paintseed integer, inventory integer, origin integer, stattrak integer)''')
+
 
         @client.on('channel_secured')
         def send_login():
@@ -32,33 +34,41 @@ class CSGOWorker(object):
             else:
                 client.login(**self.logon_details)
 
+
         @client.on('logged_on')
         def start_csgo():
             LOG.info('Logged into Steam')
             self.csgo.launch()
+
 
         @cs.on('ready')
         def gc_ready():
             LOG.info('Launched CSGO')
             pass
 
+
+    # Start the worker
     def start(self, username: str, password: str):
         self.logon_details = {
             'username': username,
             'password': password,
-            }
+        }
 
         self.steam.connect()
         self.steam.wait_event('logged_on')
         self.csgo.wait_event('ready')
 
+
+    # Close the worker
     def close(self):
         self.connection.close()
         LOG.info('Database closed')
         if self.steam.connected:
             self.steam.logout()
-        LOG.info('Logged out')
+        LOG.info('Logged out of Steam')
 
+
+    # Lookup the weapon name/skin and special attributes. Return the relevant data formatted as JSON
     def form_response(self, itemid: int, defindex: int, paintindex: int, rarity: int, quality: int, paintwear: float,
                       paintseed: int, inventory: int, origin: int, stattrak: int) -> str:
         weapon_type = const.items[str(defindex)]
@@ -71,7 +81,6 @@ class CSGOWorker(object):
                 pattern = str(paintindex)
             else:
                 pattern = 'Vanilla'
-        name = "{} | {}".format(weapon_type, pattern)
         paintseed = str(paintseed)
         special = ""
 
@@ -106,6 +115,8 @@ class CSGOWorker(object):
             'special': special
         })
 
+
+    # Get relevant information from database xor game coordinator, then return the formated data
     def get_item(self, s: int, a: int, d: int, m: int) -> str:
         in_db = self.cursor.execute('SELECT * FROM searches WHERE itemid = ?', (a,)).fetchall()
 
@@ -116,6 +127,8 @@ class CSGOWorker(object):
             LOG.info('Found {} in database'.format(a))
             return self.form_response(*in_db[0])
 
+
+    # Send the item to the game coordinator and return the response data in a Tuple
     def send(self, s: int, a: int, d: int, m: int) -> Tuple[int, int, int, int, int, float, int, int, int, int]:
         self.csgo.send(self.request_method, {
             'param_s': s,
@@ -133,12 +146,6 @@ class CSGOWorker(object):
         iteminfo = resp[0].iteminfo
 
         paintwear = struct.unpack('f', struct.pack('i', iteminfo.paintwear))[0]
-
-        # if 'killeatervalue' in str(iteminfo):
-        #     stattrak = 1
-        # else:
-        #     stattrak = 0
-
         stattrak = 1 if 'killeatervalue' in str(iteminfo) else 0
 
         values = (iteminfo.itemid, iteminfo.defindex, iteminfo.paintindex, iteminfo.rarity, iteminfo.quality, paintwear, iteminfo.paintseed, iteminfo.inventory, iteminfo.origin, stattrak)
@@ -146,5 +153,7 @@ class CSGOWorker(object):
         self.cursor.execute('INSERT INTO searches (itemid, defindex, paintindex, rarity, quality, paintwear, paintseed, inventory, origin, stattrak) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
                             values)
         self.connection.commit()
+
+        LOG.info('Added id: {} to database'.format(a))
 
         return values
