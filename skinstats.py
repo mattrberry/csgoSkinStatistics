@@ -26,7 +26,7 @@ def item() -> str:
     m = int(request.json['m'])
 
     try:
-        iteminfo = worker.send(s, a, d, m)
+        iteminfo = worker.get_item(s, a, d, m)
     except TypeError:
         return 'Invalid link or Steam is slow.'
 

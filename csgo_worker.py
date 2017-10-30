@@ -5,6 +5,8 @@ from csgo.enums import ECsgoGCMsg
 import struct
 import const
 import json
+import sqlite3
+from typing import Tuple
 
 
 LOG = logging.getLogger("CSGO Worker")
@@ -17,6 +19,11 @@ class CSGOWorker(object):
 
         self.request_method = ECsgoGCMsg.EMsgGCCStrike15_v2_Client2GCEconPreviewDataBlockRequest
         self.response_method = ECsgoGCMsg.EMsgGCCStrike15_v2_Client2GCEconPreviewDataBlockResponse
+
+        self.connection = sqlite3.connect('searches.db')
+        self.cursor = self.connection.cursor()
+
+        self.cursor.execute('''CREATE TABLE IF NOT EXISTS searches (itemid integer, defindex integer, paintindex integer, rarity integer, quality integer, paintwear real, paintseed integer, inventory integer, origin integer, stattrak integer)''')
 
         @client.on('channel_secured')
         def send_login():
@@ -46,49 +53,26 @@ class CSGOWorker(object):
         self.csgo.wait_event('ready')
 
     def close(self):
+        self.connection.close()
+        LOG.info('Database closed')
         if self.steam.connected:
             self.steam.logout()
         LOG.info('Logged out')
 
-    def send(self, s: int, a: int, d: int, m: int) -> str:
-        LOG.info('Checking item {}'.format(a))
+    def form_response(self, itemid: int, defindex: int, paintindex: int, rarity: int, quality: int, paintwear: float,
+                      paintseed: int, inventory: int, origin: int, stattrak: int) -> str:
+        weapon_type = const.items[str(defindex)]
 
-        with open('searches.txt') as searches:
-            for search in searches:
-                if search.split()[0] == str(a):
-                    LOG.info('Found item {} in searches.txt'.format(a))
-                    return ' '.join(search.split()[1:])
-
-        LOG.info('Sending s:{} a:{} d:{} m:{} to GC'.format(s, a, d, m))
-
-        self.csgo.send(self.request_method, {
-            'param_s': s,
-            'param_a': a,
-            'param_d': d,
-            'param_m': m,
-            })
-
-        resp = self.csgo.wait_event(self.response_method, timeout=1)
-
-        if resp is None:
-            LOG.info('CSGO failed to respond')
-            raise TypeError
-
-        resp_iteminfo = resp[0].iteminfo
-
-        paintwear = struct.unpack('f', struct.pack('i',
-                                                   resp_iteminfo.paintwear))[0]
-        weapon_type = const.items[str(resp_iteminfo.defindex)]
         try:
-            pattern = const.skins[str(resp_iteminfo.paintindex)]
+            pattern = const.skins[str(paintindex)]
         except:
-            if resp_iteminfo.paintindex > 0:
+            if paintindex > 0:
                 LOG.info('Pattern {} missing from database')
-                pattern = str(resp_iteminfo.paintindex)
+                pattern = str(paintindex)
             else:
                 pattern = 'Vanilla'
         name = "{} | {}".format(weapon_type, pattern)
-        paintseed = str(resp_iteminfo.paintseed)
+        paintseed = str(paintseed)
         special = ""
 
         if pattern == "Marble Fade":
@@ -104,29 +88,63 @@ class CSGOWorker(object):
             percentage = round(info[0] + scaled * (100 - info[0]))
             special = str(percentage) + "%"
         elif pattern == "Doppler" or pattern == "Gamma Doppler":
-            special = const.doppler[resp_iteminfo.paintindex]
+            special = const.doppler[paintindex]
 
-        if 'killeatervalue' in str(resp_iteminfo):
-            stattrak = 'yes'
+        return json.dumps({
+            'itemid': itemid,
+            'defindex': defindex,
+            'paintindex': paintindex,
+            'rarity': rarity,
+            'quality': quality,
+            'paintwear': paintwear,
+            'paintseed': paintseed,
+            'inventory': inventory,
+            'origin': origin,
+            'stattrak': stattrak,
+            'weapon': weapon_type,
+            'skin': pattern,
+            'special': special
+        })
+
+    def get_item(self, s: int, a: int, d: int, m: int) -> str:
+        in_db = self.cursor.execute('SELECT * FROM searches WHERE itemid = ?', (a,)).fetchall()
+
+        if len(in_db) is 0:
+            LOG.info('Sending s:{} a:{} d:{} m:{} to GC'.format(s, a, d, m))
+            return self.form_response(*self.send(s, a, d, m))
         else:
-            stattrak = 'no'
+            LOG.info('Found {} in database'.format(a))
+            return self.form_response(*in_db[0])
 
-        iteminfo = {
-                'name':       name,
-                'special':    special,
-                'itemid':     resp_iteminfo.itemid,
-                'defindex':   resp_iteminfo.defindex,
-                'paintindex': resp_iteminfo.paintindex,
-                'rarity':     resp_iteminfo.rarity,
-                'quality':    resp_iteminfo.quality,
-                'paintwear':  paintwear,
-                'paintseed':  resp_iteminfo.paintseed,
-                'inventory':  resp_iteminfo.inventory,
-                'origin':     resp_iteminfo.origin,
-                'stattrak':   stattrak,
-                }
+    def send(self, s: int, a: int, d: int, m: int) -> Tuple[int, int, int, int, int, float, int, int, int, int]:
+        self.csgo.send(self.request_method, {
+            'param_s': s,
+            'param_a': a,
+            'param_d': d,
+            'param_m': m,
+        })
 
-        with open('searches.txt', 'a') as searches:
-            searches.write(str(a) + ' ' + json.dumps(iteminfo) + '\n')
+        resp = self.csgo.wait_event(self.response_method, timeout=1)
 
-        return json.dumps(iteminfo)
+        if resp is None:
+            LOG.info('CSGO failed to respond')
+            raise TypeError
+
+        iteminfo = resp[0].iteminfo
+
+        paintwear = struct.unpack('f', struct.pack('i', iteminfo.paintwear))[0]
+
+        # if 'killeatervalue' in str(iteminfo):
+        #     stattrak = 1
+        # else:
+        #     stattrak = 0
+
+        stattrak = 1 if 'killeatervalue' in str(iteminfo) else 0
+
+        values = (iteminfo.itemid, iteminfo.defindex, iteminfo.paintindex, iteminfo.rarity, iteminfo.quality, paintwear, iteminfo.paintseed, iteminfo.inventory, iteminfo.origin, stattrak)
+
+        self.cursor.execute('INSERT INTO searches (itemid, defindex, paintindex, rarity, quality, paintwear, paintseed, inventory, origin, stattrak) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+                            values)
+        self.connection.commit()
+
+        return values
