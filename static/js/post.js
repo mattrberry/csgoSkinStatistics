@@ -2,9 +2,9 @@ function display(data, loadTime) {
     try {
         iteminfo = JSON.parse(data);
 
-        document.getElementById('item_name').innerHTML = iteminfo.name + " <span class=\"pop\">" + iteminfo.special + "</span>";
+        document.getElementById('item_name').innerHTML = iteminfo.weapon + ' | ' + iteminfo.skin + " <span class=\"pop\">" + iteminfo.special + "</span>";
         document.getElementById('item_name').classList.remove('knife');
-        if (isKnife(iteminfo.name)) {
+        if (isKnife(iteminfo.weapon)) {
             document.getElementById('item_name').classList.add('knife');
         }
         document.getElementById('item_paintwear').innerHTML = iteminfo.paintwear;
@@ -12,7 +12,9 @@ function display(data, loadTime) {
         document.getElementById('item_paintseed').innerHTML = iteminfo.paintseed;
         document.getElementById('status').innerHTML = "Loaded in " + loadTime + " seconds";
         document.getElementById('stattrak-indicator').classList.remove('yes');
-        document.getElementById('stattrak-indicator').classList.add(iteminfo.stattrak);
+        if (iteminfo.stattrak) {
+            document.getElementById('stattrak-indicator').classList.add('yes');
+        }
     } catch (e) {
         document.getElementById('item_name').innerHTML = "-";
         document.getElementById('item_name').classList.remove('knife');
@@ -36,7 +38,6 @@ window.onload = function () {
         element.toElement.blur();
 
         var box = document.getElementById("textbox").value;
-        console.log(box);
 
         try {
             var match = box.match(/([SM])(\d+)A(\d+)D(\d+)$/);
@@ -63,7 +64,7 @@ window.onload = function () {
         document.getElementById('textbox').value = hashURL;
         document.getElementById('button').click();
     } else {
-        post({s:'76561198261551396',a:'12256887280',d:'2776544801323831695',m:'0'});
+        post({s: '76561198261551396', a: '12256887280', d: '2776544801323831695', m: '0'});
     }
 
     ping();
@@ -91,7 +92,6 @@ function ping() {
     request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     request.onreadystatechange = function () {
         if (request.readyState === XMLHttpRequest.DONE && request.status === 200 && request.response === 'pong') {
-            console.log(request);
             document.getElementById('ping').innerHTML = 'Ping:' + Math.floor((performance.now() - start)).toString() + 'ms';
         }
     };
@@ -99,10 +99,9 @@ function ping() {
     request.send('ping');
 }
 
-var knifes = ['Bayonet', 'Butterfly Knife', 'Falchion Knife', 'Flip Knife', 'Gut Knife',
+var knives = ['Bayonet', 'Butterfly Knife', 'Falchion Knife', 'Flip Knife', 'Gut Knife',
     'Huntsman Knife', 'Karambit', 'M9 Bayonet', 'Shadow Daggers', 'Bowie Knife'];
 
 function isKnife(item_name) {
-    var item_type = item_name.split(' | ')[0];
-    return knifes.indexOf(item_type) > -1;
+    return knives.indexOf(item_name) > -1;
 }
