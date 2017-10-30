@@ -24,7 +24,7 @@ class CSGOWorker(object):
         self.cursor = self.connection.cursor()
         LOG.info('Connected to database')
 
-        self.cursor.execute('''CREATE TABLE IF NOT EXISTS searches (itemid integer, defindex integer, paintindex integer, rarity integer, quality integer, paintwear real, paintseed integer, inventory integer, origin integer, stattrak integer)''')
+        self.cursor.execute('''CREATE TABLE IF NOT EXISTS searches (itemid integer NOT NULL PRIMARY KEY, defindex integer NOT NULL, paintindex integer NOT NULL, rarity integer NOT NULL, quality integer NOT NULL, paintwear real NOT NULL, paintseed integer NOT NULL, inventory integer NOT NULL, origin integer NOT NULL, stattrak integer NOT NULL)''')
 
 
         @client.on('channel_secured')
@@ -148,12 +148,14 @@ class CSGOWorker(object):
         paintwear = struct.unpack('f', struct.pack('i', iteminfo.paintwear))[0]
         stattrak = 1 if 'killeatervalue' in str(iteminfo) else 0
 
+        if 'paintwear' not in str(iteminfo):
+            raise TypeError
+
         values = (iteminfo.itemid, iteminfo.defindex, iteminfo.paintindex, iteminfo.rarity, iteminfo.quality, paintwear, iteminfo.paintseed, iteminfo.inventory, iteminfo.origin, stattrak)
 
-        self.cursor.execute('INSERT INTO searches (itemid, defindex, paintindex, rarity, quality, paintwear, paintseed, inventory, origin, stattrak) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-                            values)
+        self.cursor.execute('INSERT INTO searches (itemid, defindex, paintindex, rarity, quality, paintwear, paintseed, inventory, origin, stattrak) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', values)
         self.connection.commit()
 
-        LOG.info('Added id: {} to database'.format(a))
+        LOG.info('Added ID: {} to database'.format(a))
 
         return values
