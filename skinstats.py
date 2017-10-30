@@ -16,7 +16,6 @@ app = Flask('Flask Server')
 
 @app.route('/')
 def home():
-    LOG.info('Serving static to ' + request.remote_addr)
     return current_app.send_static_file('index.html')
 
 
@@ -30,17 +29,15 @@ def item() -> str:
     try:
         iteminfo = worker.get_item(s, a, d, m)
     except TypeError:
-        LOG.info('Failed request from ' + request.remote_addr)
+        LOG.info('Failed response')
         return 'Invalid link or Steam is slow.'
-
-    LOG.info('Successful response to ' + request.remote_addr)
 
     return str(iteminfo)
 
 
 @app.route('/ping', methods=["POST"])
 def ping() -> str:
-    LOG.info('Ping ' + request.remote_addr)
+    LOG.info('Ping')
     return 'pong'
 
 
