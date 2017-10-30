@@ -37,7 +37,6 @@ def item() -> str:
 
 @app.route('/ping', methods=["POST"])
 def ping() -> str:
-    LOG.info('Ping')
     return 'pong'
 
 
