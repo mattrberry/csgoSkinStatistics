@@ -65,7 +65,7 @@ class CSGOWorker(object):
         LOG.info('Database closed')
         if self.steam.connected:
             self.steam.logout()
-        LOG.info('Logged out of Steam')
+            LOG.info('Logged out of Steam')
 
 
     # Lookup the weapon name/skin and special attributes. Return the relevant data formatted as JSON
