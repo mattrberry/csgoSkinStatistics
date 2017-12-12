@@ -2,6 +2,8 @@ from gevent.wsgi import WSGIServer
 from csgo_worker import CSGOWorker
 from flask import Flask, request, current_app
 
+import re
+
 import os
 import sys
 
@@ -19,12 +21,23 @@ def home():
     return current_app.send_static_file('index.html')
 
 
-@app.route('/item', methods=["POST"])
+@app.route('/api', methods=['GET'])
 def item() -> str:
-    s = int(request.json['s'])
-    a = int(request.json['a'])
-    d = int(request.json['d'])
-    m = int(request.json['m'])
+    if 'url' in request.args:
+        match = re.search('([SM])(\d+)A(\d+)D(\d+)$', request.args['url'])
+        if 'S' == match.group(1):
+            s = int(match.group(2))
+            m = 0
+        else:
+            s = 0
+            m = int(match.group(2))
+        a = int(match.group(3))
+        d = int(match.group(4))
+    else:
+        s = int(request.args['s'])
+        a = int(request.args['a'])
+        d = int(request.args['d'])
+        m = int(request.args['m'])
 
     try:
         iteminfo = worker.get_item(s, a, d, m)
