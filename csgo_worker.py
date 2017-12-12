@@ -81,18 +81,17 @@ class CSGOWorker(object):
                 pattern = str(paintindex)
             else:
                 pattern = 'Vanilla'
-        paintseed = str(paintseed)
         special = ""
 
         if pattern == "Marble Fade":
             try:
                 LOG.info(weapon_type)
-                special = const.marbles[weapon_type][paintseed]
+                special = const.marbles[weapon_type][str(paintseed)]
             except KeyError:
                 LOG.info("Non-indexed marble fade")
         elif pattern == "Fade" and weapon_type in const.fades:
             info = const.fades[weapon_type]
-            unscaled = const.order[::info[1]].index(int(paintseed))
+            unscaled = const.order[::info[1]].index(paintseed)
             scaled = unscaled / 1001
             percentage = round(info[0] + scaled * (100 - info[0]))
             special = str(percentage) + "%"
