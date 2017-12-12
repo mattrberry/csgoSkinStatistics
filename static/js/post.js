@@ -71,17 +71,24 @@ window.onload = function () {
     setInterval(ping, 30000);
 };
 
+function jsonToUrl(json) {
+    s = "?";
+    for (var key in json) {
+        s += key + "=" + json[key] + "&";
+    }
+    return s.substring(0, s.length - 1);
+}
+
 function post(requestData) {
     var start = performance.now();
 
     var request = new XMLHttpRequest();
-    request.open('POST', '/item', true);
-    request.setRequestHeader('Content-type', 'application/json');
-    request.onreadystatechange = function () {
+    request.open('GET', '/api'+jsonToUrl(requestData), true);
+    request.onload = function () {
         display(request.response, ((performance.now() - start) / 1000).toFixed(2));
     };
 
-    request.send(JSON.stringify(requestData));
+    request.send();
 }
 
 function ping() {
