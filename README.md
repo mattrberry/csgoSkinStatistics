@@ -73,9 +73,11 @@ Example Market Item
 For right now, errors come in many non-conformed shapes and sizes. Hopefully you don't run into any, but if you do, make sure your input exactly matches the examples. If you still have problems, feel free to open an Issue on GitHub.
 
 ### Todo (recent)
-- [x] fix items with apostrophe in name (should come along with previous todo and making response easier to parse)
-- [x] show if a weapon is stattrak
-- [x] switch to actually using a database rather than a flat text file
+- [x] Fix items with apostrophe in name (should come along with previous todo and making response easier to parse)
+- [x] Show if a weapon is stattrak
+- [x] Switch to actually using a database rather than a flat text file
 - [x] API
-- [ ] more servers
-- [ ] load balancing
+- [ ] API rate limiting
+- [ ] Verbose, specific errors for API
+- [ ] More servers
+- [ ] Load balancing
