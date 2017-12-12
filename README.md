@@ -19,7 +19,7 @@ Endpoint: https://skinstats.io/api
 
 #### Usage
 
-###### Pre-Parsed Inspect Link Elements (preferred)
+##### Pre-Parsed Inspect Link Elements (preferred)
 
 |Parameter|Description                                   |
 |---------|----------------------------------------------|
@@ -36,7 +36,7 @@ Example Market Item
 
 `https://skinstats.io/api?m=563330426657599553&a=6710760926&d=9406593057029549017&s=0`
 
-###### Full Inspect URL
+##### Full Inspect URL
 
 |Parameter|Description                         |
 |---------|------------------------------------|
@@ -68,7 +68,7 @@ Example Market Item
 |skin      |string |Name of the skin                               |
 |special   |string |Special attributes of the skin (i.e. "Phase 1")|
 
-###### Errors
+##### Errors
 
 For right now, errors come in many non-conformed shapes and sizes. Hopefully you don't run into any, but if you do, make sure your input exactly matches the examples. If you still have problems, feel free to open an Issue on GitHub.
 
