@@ -77,7 +77,7 @@ class CSGOWorker(object):
             pattern = const.skins[str(paintindex)]
         except:
             if paintindex > 0:
-                LOG.info('Pattern {} missing from database')
+                LOG.info('Pattern {} missing from database'.format(paintindex))
                 pattern = str(paintindex)
             else:
                 pattern = 'Vanilla'
