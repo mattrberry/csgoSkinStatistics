@@ -1557,7 +1557,7 @@ items = {
     # Not sure where these knives went. Valve?
     "519":"Ursus Knife",
     "520":"Navaja Knife",
-    # Not sure where this knife went. Valve?s
+    # Not sure where this knife went. Valve?
     "522":"Stiletto Knife",
     "523":"Talon Knife",
     "874":"5 Year Veteran Coin",
