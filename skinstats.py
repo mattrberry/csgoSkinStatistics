@@ -1,4 +1,6 @@
-from gevent.wsgi import WSGIServer
+from gevent import monkey
+monkey.patch_all()
+from gevent.pywsgi import WSGIServer
 from csgo_worker import CSGOWorker
 from flask import Flask, request, current_app
 
