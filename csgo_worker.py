@@ -85,10 +85,9 @@ class CSGOWorker(object):
 
         if pattern == "Marble Fade":
             try:
-                LOG.info(weapon_type)
                 special = const.marbles[weapon_type][str(paintseed)]
             except KeyError:
-                LOG.info("Non-indexed marble fade")
+                LOG.info('Non-indexed %s | Marble Fade' % weapon_type)
         elif pattern == "Fade" and weapon_type in const.fades:
             info = const.fades[weapon_type]
             unscaled = const.order[::info[1]].index(paintseed)
