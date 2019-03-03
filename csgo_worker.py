@@ -15,6 +15,7 @@ LOG = logging.getLogger("CSGO Worker")
 class CSGOWorker(object):
     def __init__(self):
         self.steam = client = SteamClient()
+        self.steam.cm_servers.bootstrap_from_webapi()
         self.csgo = cs = CSGOClient(self.steam)
 
         self.request_method = ECsgoGCMsg.EMsgGCCStrike15_v2_Client2GCEconPreviewDataBlockRequest
