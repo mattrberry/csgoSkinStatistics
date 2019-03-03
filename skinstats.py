@@ -11,7 +11,7 @@ import sys
 
 import logging
 
-logging.basicConfig(format="%(asctime)s | %(name)s | %(message)s",
+logging.basicConfig(format="%(asctime)s | %(name)s | thread:%(thread)s | %(levelname)s | %(message)s",
                     level=logging.INFO)
 LOG = logging.getLogger('CSGO GC API')
 
