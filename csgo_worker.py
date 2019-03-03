@@ -26,26 +26,24 @@ class CSGOWorker(object):
 
         self.cursor.execute('''CREATE TABLE IF NOT EXISTS searches (itemid integer NOT NULL PRIMARY KEY, defindex integer NOT NULL, paintindex integer NOT NULL, rarity integer NOT NULL, quality integer NOT NULL, paintwear real NOT NULL, paintseed integer NOT NULL, inventory integer NOT NULL, origin integer NOT NULL, stattrak integer NOT NULL)''')
 
+        self.logon_details = None
 
         @client.on('channel_secured')
         def send_login():
             if client.relogin_available:
                 client.relogin()
-            else:
+            elif self.logon_details is not None:
                 client.login(**self.logon_details)
-
 
         @client.on('logged_on')
         def start_csgo():
             LOG.info('Logged into Steam')
             self.csgo.launch()
 
-
         @cs.on('ready')
         def gc_ready():
             LOG.info('Launched CSGO')
             pass
-
 
     # Start the worker
     def start(self, username: str, password: str):
@@ -56,8 +54,13 @@ class CSGOWorker(object):
 
         self.steam.connect()
         self.steam.wait_event('logged_on')
+        self.logon_details = None
         self.csgo.wait_event('ready')
 
+    # CLI login
+    def cli_login(self):
+        self.steam.cli_login()
+        self.csgo.wait_event('ready')
 
     # Close the worker
     def close(self):
@@ -66,7 +69,6 @@ class CSGOWorker(object):
         if self.steam.connected:
             self.steam.logout()
             LOG.info('Logged out of Steam')
-
 
     # Lookup the weapon name/skin and special attributes. Return the relevant data formatted as JSON
     def form_response(self, itemid: int, defindex: int, paintindex: int, rarity: int, quality: int, paintwear: float,
@@ -113,7 +115,6 @@ class CSGOWorker(object):
             'special': special
         })
 
-
     # Get relevant information from database xor game coordinator, then return the formated data
     def get_item(self, s: int, a: int, d: int, m: int) -> str:
         in_db = self.cursor.execute('SELECT * FROM searches WHERE itemid = ?', (a,)).fetchall()
@@ -124,7 +125,6 @@ class CSGOWorker(object):
         else:
             LOG.info('Found {} in database'.format(a))
             return self.form_response(*in_db[0])
-
 
     # Send the item to the game coordinator and return the response data in a Tuple
     def send(self, s: int, a: int, d: int, m: int) -> Tuple[int, int, int, int, int, float, int, int, int, int]:

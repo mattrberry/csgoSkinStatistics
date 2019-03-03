@@ -63,16 +63,29 @@ if __name__ == "__main__":
     worker = CSGOWorker()
 
     try:
-        worker.start(username=os.environ['steam_user'],
-                     password=os.environ['steam_pass'])
+        if os.environ.get('steam_user') and os.environ.get('steam_pass'):
+            try:
+                worker.start(username=os.environ['steam_user'],
+                             password=os.environ['steam_pass'])
+            except:
+                LOG.error('Failed to sign in with environment variables')
+                raise
+        elif len(sys.argv) == 3:
+            try:
+                worker.start(username=sys.argv[1], password=sys.argv[2])
+            except:
+                LOG.error('Failed to sign in with args')
+                raise
+        else:
+            try:
+                worker.cli_login()
+            except:
+                LOG.error('Failed to with in through the CLI')
+                raise
     except:
-        LOG.info('Failed with environment variables. Trying args...')
-        try:
-            worker.start(username=sys.argv[1], password=sys.argv[2])
-        except:
-            LOG.info('Failed with args. Exiting...')
-            worker.close()
-            sys.exit()
+        LOG.info('Exiting...')
+        worker.close()
+        sys.exit()
 
     LOG.info("Starting HTTP server...")
     http_server = WSGIServer(('', 5000), app, log=None)
