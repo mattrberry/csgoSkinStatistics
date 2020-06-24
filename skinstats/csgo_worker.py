@@ -1,15 +1,18 @@
 import logging
-from steam import SteamClient
-from csgo import CSGOClient
+from steam.client import SteamClient
+from csgo.client import CSGOClient
 from csgo.enums import ECsgoGCMsg
 import struct
 import const
 import json
 import sqlite3
 from typing import Tuple
+import requests
 
 
 LOG = logging.getLogger("CSGO Worker")
+
+const.skins = requests.get('http://skin_ids:5001/get_skin_ids').json()
 
 
 class CSGOWorker(object):
