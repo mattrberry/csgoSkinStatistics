@@ -1,4 +1,3 @@
 Flask
-gevent
-steam
+steam[client]
 csgo
