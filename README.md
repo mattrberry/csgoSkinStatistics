@@ -15,7 +15,7 @@ After cloning this repository, simply run the skinstats module with Python 3. If
 
 ### API
 
-Endpoint: https://skinstats.io/api
+Endpoint: https://skinstats.app/api
 
 #### Usage
 
@@ -30,11 +30,11 @@ Endpoint: https://skinstats.io/api
 
 Example Inventory Item
 
-`https://skinstats.io/api?s=76561198261551396&a=12256887280&d=2776544801323831695&m=0`
+`https://skinstats.app/api?s=76561198261551396&a=12256887280&d=2776544801323831695&m=0`
 
 Example Market Item
 
-`https://skinstats.io/api?m=563330426657599553&a=6710760926&d=9406593057029549017&s=0`
+`https://skinstats.app/api?m=563330426657599553&a=6710760926&d=9406593057029549017&s=0`
 
 ##### Full Inspect URL
 
@@ -44,11 +44,11 @@ Example Market Item
 
 Example Inventory Item
 
-`https://skinstats.io/api?url=steam://rungame/730/76561202255233023/+csgo_econ_action_preview%20S76561198261551396A12256887280D2776544801323831695`
+`https://skinstats.app/api?url=steam://rungame/730/76561202255233023/+csgo_econ_action_preview%20S76561198261551396A12256887280D2776544801323831695`
 
 Example Market Item
 
-`https://skinstats.io/api?url=steam://rungame/730/76561202255233023/+csgo_econ_action_preview%20M625254122282020305A6760346663D30614827701953021`
+`https://skinstats.app/api?url=steam://rungame/730/76561202255233023/+csgo_econ_action_preview%20M625254122282020305A6760346663D30614827701953021`
 
 #### Response
 
