@@ -35,7 +35,7 @@ window.onload = function () {
     });
 
     document.getElementById("button").onclick = function (element) {
-        element.toElement.blur();
+        element.target.blur();
 
         var box = document.getElementById("textbox").value;
 
