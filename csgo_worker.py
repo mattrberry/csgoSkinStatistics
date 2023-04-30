@@ -6,6 +6,7 @@ import struct
 import const
 import json
 import sqlite3
+from time import time
 from typing import Tuple
 
 
@@ -30,7 +31,19 @@ class CSGOWorker(object):
         LOG.info("Connected to database")
 
         self.cursor.execute(
-            """CREATE TABLE IF NOT EXISTS searches (itemid integer NOT NULL PRIMARY KEY, defindex integer NOT NULL, paintindex integer NOT NULL, rarity integer NOT NULL, quality integer NOT NULL, paintwear real NOT NULL, paintseed integer NOT NULL, inventory integer NOT NULL, origin integer NOT NULL, stattrak integer NOT NULL)"""
+            """CREATE TABLE IF NOT EXISTS searches (
+                itemid integer NOT NULL PRIMARY KEY,
+                defindex integer NOT NULL,
+                paintindex integer NOT NULL,
+                rarity integer NOT NULL,
+                quality integer NOT NULL,
+                paintwear real NOT NULL,
+                paintseed integer NOT NULL,
+                inventory integer NOT NULL,
+                origin integer NOT NULL,
+                stattrak integer NOT NULL,
+                timestamp integer DATETIME DEFAULT CURRENT_TIMESTAMP
+            )"""
         )
 
         self.logon_details = None
@@ -90,6 +103,7 @@ class CSGOWorker(object):
         inventory: int,
         origin: int,
         stattrak: int,
+        timestamp: int,
     ) -> str:
         defindex_str = str(defindex)
         weapon_type = const.items.get(defindex_str, defindex_str)
@@ -155,7 +169,7 @@ class CSGOWorker(object):
     # Send the item to the game coordinator and return the response data in a Tuple
     def send(
         self, s: int, a: int, d: int, m: int
-    ) -> Tuple[int, int, int, int, int, float, int, int, int, int]:
+    ) -> Tuple[int, int, int, int, int, float, int, int, int, int, int]:
         self.csgo.send(
             self.request_method,
             {
@@ -169,7 +183,7 @@ class CSGOWorker(object):
         resp = self.csgo.wait_event(self.response_method, timeout=1)
 
         if resp is None:
-            LOG.info("CSGO failed to respond")
+            LOG.error("CSGO failed to respond")
             raise TypeError
 
         iteminfo = resp[0].iteminfo
@@ -193,12 +207,16 @@ class CSGOWorker(object):
             stattrak,
         )
 
-        self.cursor.execute(
-            "INSERT INTO searches (itemid, defindex, paintindex, rarity, quality, paintwear, paintseed, inventory, origin, stattrak) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        result = self.cursor.execute(
+            """
+            INSERT INTO searches (itemid, defindex, paintindex, rarity, quality, paintwear, paintseed, inventory, origin, stattrak)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            RETURNING *
+            """,
             values,
-        )
+        ).fetchall()
         self.connection.commit()
 
         LOG.info("Added ID: {} to database".format(a))
 
-        return values
+        return result[0]
