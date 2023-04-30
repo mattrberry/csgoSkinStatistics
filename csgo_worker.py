@@ -1,6 +1,6 @@
 import logging
-from steam import SteamClient
-from csgo import CSGOClient
+from steam.client import SteamClient
+from csgo.client import CSGOClient
 from csgo.enums import ECsgoGCMsg
 import struct
 import const
