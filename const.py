@@ -1,14 +1,15 @@
+# Denotes the minimum fade percentage of each knife and whether its fade order is reversed.
 fades = {
-    "Bowie Knife": [80, 1],
-    "Huntsman Knife": [80, 1],
-    "M9 Bayonet": [80, 1],
-    "Bayonet": [80, 1],
-    "Flip Knife": [80, 1],
-    "Gut Knife": [80, 1],
-    "Shadow Daggers": [80, 1],
-    "Karambit": [80, -1],
-    "Butterfly Knife": [80, 1],
-    "Falchion Knife": [80, 1],
+    "Bowie Knife": (80, False),
+    "Huntsman Knife": (80, False),
+    "M9 Bayonet": (80, False),
+    "Bayonet": (80, False),
+    "Flip Knife": (80, False),
+    "Gut Knife": (80, False),
+    "Shadow Daggers": (80, False),
+    "Karambit": (80, True),
+    "Butterfly Knife": (80, False),
+    "Falchion Knife": (80, False),
 }
 
 order = [
@@ -1032,6 +1033,7 @@ doppler = {
 }
 
 skins = {
+    "0": "Vanilla",
     "2": "Groundwater",
     "3": "Candy Apple",
     "5": "Forest DDPAT",

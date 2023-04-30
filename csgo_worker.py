@@ -91,29 +91,29 @@ class CSGOWorker(object):
         origin: int,
         stattrak: int,
     ) -> str:
-        weapon_type = const.items[str(defindex)]
+        defindex_str = str(defindex)
+        weapon_type = const.items.get(defindex_str, defindex_str)
+        if weapon_type is defindex_str:
+            LOG.warn(f"Item {defindex_str} is missing from constants")
 
-        try:
-            pattern = const.skins[str(paintindex)]
-        except:
-            if paintindex > 0:
-                LOG.info("Pattern {} missing from database".format(paintindex))
-                pattern = str(paintindex)
-            else:
-                pattern = "Vanilla"
+        paintindex_str = str(paintindex)
+        pattern = const.skins.get(paintindex_str, paintindex_str)
+        if pattern is paintindex_str:
+            LOG.warn(f"Skin {paintindex_str} is missing from constants")
+
         special = ""
-
-        if pattern == "Marble Fade":
-            try:
-                special = const.marbles[weapon_type][str(paintseed)]
-            except KeyError:
+        if pattern == "Marble Fade" and weapon_type in const.marbles:
+            special = const.marbles[weapon_type].get(str(paintseed), special)
+            if not special:
                 LOG.info("Non-indexed %s | Marble Fade" % weapon_type)
         elif pattern == "Fade" and weapon_type in const.fades:
-            info = const.fades[weapon_type]
-            unscaled = const.order[:: info[1]].index(paintseed)
-            scaled = unscaled / 1001
-            percentage = round(info[0] + scaled * (100 - info[0]))
-            special = str(percentage) + "%"
+            minimum_fade_percent, order_reversed = const.fades[weapon_type]
+            fade_index = const.order.index(paintseed)
+            if order_reversed:
+                fade_index = 1000 - fade_index
+            actual_fade_percent = fade_index / 1001
+            scaled_fade_percent = round(minimum_fade_percent + actual_fade_percent * (100 - minimum_fade_percent))
+            special = str(scaled_fade_percent) + "%"
         elif pattern == "Doppler" or pattern == "Gamma Doppler":
             special = const.doppler[paintindex]
 
