@@ -112,7 +112,11 @@ class CSGOWorker(object):
             if order_reversed:
                 fade_index = 1000 - fade_index
             actual_fade_percent = fade_index / 1001
-            scaled_fade_percent = round(minimum_fade_percent + actual_fade_percent * (100 - minimum_fade_percent))
+            scaled_fade_percent = round(
+                minimum_fade_percent
+                + actual_fade_percent * (100 - minimum_fade_percent),
+                1,
+            )
             special = str(scaled_fade_percent) + "%"
         elif pattern == "Doppler" or pattern == "Gamma Doppler":
             special = const.doppler[paintindex]
