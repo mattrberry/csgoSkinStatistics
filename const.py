@@ -1,15 +1,24 @@
 # Denotes the minimum fade percentage of each knife and whether its fade order is reversed.
 fades = {
-    "Bowie Knife": (80, False),
-    "Huntsman Knife": (80, False),
-    "M9 Bayonet": (80, False),
     "Bayonet": (80, False),
+    "Classic Knife": (80, False),
     "Flip Knife": (80, False),
     "Gut Knife": (80, False),
-    "Shadow Daggers": (80, False),
     "Karambit": (80, True),
-    "Butterfly Knife": (80, False),
+    "M9 Bayonet": (80, False),
+    "Huntsman Knife": (80, False),
     "Falchion Knife": (80, False),
+    "Bowie Knife": (80, False),
+    "Butterfly Knife": (80, False),
+    "Shadow Daggers": (80, False),
+    "Paracord Knife": (80, False),
+    "Survival Knife": (80, False),
+    "Ursus Knife": (80, False),
+    "Navaja Knife": (80, False),
+    "Nomad Knife": (80, False),
+    "Stiletto Knife": (80, False),
+    "Talon Knife": (80, True),
+    "Skeleton Knife": (80, False),
 }
 
 order = [
