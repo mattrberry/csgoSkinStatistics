@@ -141,7 +141,7 @@ class CSGOWorker(object):
             "SELECT * FROM searches WHERE itemid = ?", (a,)
         ).fetchall()
 
-        if len(in_db) is 0:
+        if len(in_db) == 0:
             LOG.info("Sending s:{} a:{} d:{} m:{} to GC".format(s, a, d, m))
             return self.form_response(*self.send(s, a, d, m))
         else:
