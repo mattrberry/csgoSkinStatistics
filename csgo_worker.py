@@ -51,14 +51,36 @@ class CSGOWorker(object):
         @client.on("channel_secured")
         def send_login():
             if client.relogin_available:
+                LOG.info("Attempting to re-login")
                 client.relogin()
             elif self.logon_details is not None:
+                LOG.info("Attempting to login with saved creds")
                 client.login(**self.logon_details)
 
         @client.on("logged_on")
         def start_csgo():
             LOG.info("Logged into Steam")
             self.csgo.launch()
+
+        @client.on("error")
+        def handle_error(result):
+            LOG.info("Logon result: %s", repr(result))
+
+        @client.on("connected")
+        def handle_connected():
+            LOG.info("Connected to %s", client.current_server_addr)
+
+        @client.on("reconnect")
+        def handle_reconnect(delay):
+            LOG.info("Reconnect in %ds...", delay)
+
+        @client.on("disconnected")
+        def handle_disconnect():
+            LOG.info("Disconnected.")
+
+            if client.relogin_available:
+                LOG.info("Reconnecting...")
+                client.reconnect(maxdelay=30)
 
         @cs.on("ready")
         def gc_ready():
