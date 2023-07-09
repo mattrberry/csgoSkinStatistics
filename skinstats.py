@@ -2,7 +2,7 @@ from gevent import monkey
 
 monkey.patch_all()
 from gevent.pywsgi import WSGIServer
-from csgo_worker import CSGOWorker
+from csgo_worker import CSGOWorker, NoGcResponse, NoPaintwear
 from flask import Flask, request, current_app
 
 import re
@@ -46,9 +46,13 @@ def item() -> str:
 
     try:
         iteminfo = worker.get_item(s, a, d, m)
-    except TypeError:
-        LOG.info("Failed response")
-        return "Invalid link or Steam is slow."
+    except NoGcResponse:
+        return "Steam failed to respond. Check you have the correct link for a skin, not a sticker. Email support@skinstats.app if this persists."
+    except NoPaintwear:
+        return "Only skins are supported. If this seems like an error, email support@skinstats.app."
+    except Exception as e:
+        LOG.error(f"Unhandled exception in worker: {e}")
+        return "Failed to retrieve info for an unknown reason."
 
     return str(iteminfo)
 

@@ -12,6 +12,13 @@ from typing import Tuple
 
 LOG = logging.getLogger("CSGO Worker")
 
+# No response from the game coordinator.
+class NoGcResponse(Exception):
+    pass
+
+# Response has no "paintwear" field.
+class NoPaintwear(Exception):
+    pass
 
 class CSGOWorker(object):
     def __init__(self):
@@ -50,6 +57,7 @@ class CSGOWorker(object):
 
         @client.on("channel_secured")
         def send_login():
+            LOG.info("Channel secured. Attempting login")
             if client.relogin_available:
                 LOG.info("Attempting to re-login")
                 client.relogin()
@@ -206,7 +214,7 @@ class CSGOWorker(object):
 
         if resp is None:
             LOG.error("CSGO failed to respond")
-            raise TypeError
+            raise NoGcResponse
 
         iteminfo = resp[0].iteminfo
 
@@ -214,7 +222,8 @@ class CSGOWorker(object):
         stattrak = 1 if "killeatervalue" in str(iteminfo) else 0
 
         if "paintwear" not in str(iteminfo):
-            raise TypeError
+            LOG.info(f"Could not find paintwear for {iteminfo}")
+            raise NoPaintwear
 
         values = (
             iteminfo.itemid,
