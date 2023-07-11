@@ -1,3 +1,26 @@
+# All knives. Used for displaying the knife icon on the website.
+knives = {
+    "Bayonet",
+    "Classic Knife",
+    "Flip Knife",
+    "Gut Knife",
+    "Karambit",
+    "M9 Bayonet",
+    "Huntsman Knife",
+    "Falchion Knife",
+    "Bowie Knife",
+    "Butterfly Knife",
+    "Shadow Daggers",
+    "Paracord Knife",
+    "Survival Knife",
+    "Ursus Knife",
+    "Navaja Knife",
+    "Nomad Knife",
+    "Stiletto Knife",
+    "Talon Knife",
+    "Skeleton Knife",
+}
+
 # Denotes the minimum fade percentage of each knife and whether its fade order is reversed.
 fades = {
     "Bayonet": (80, False),
@@ -2975,7 +2998,6 @@ marbles = {
         "997": "FFI",
     },
 }
-
 
 items = {
     "1": "Desert Eagle",

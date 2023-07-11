@@ -180,6 +180,7 @@ class CSGOWorker(object):
                 "weapon": weapon_type,
                 "skin": pattern,
                 "special": special,
+                "isKnife": weapon_type in const.knives,
             }
         )
 

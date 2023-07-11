@@ -10,7 +10,7 @@ function display(data, loadTime) {
       iteminfo.special +
       "</span>";
     document.getElementById("item_name").classList.remove("knife");
-    if (isKnife(iteminfo.weapon)) {
+    if (iteminfo.isKnife) {
       document.getElementById("item_name").classList.add("knife");
     }
     document.getElementById("item_paintwear").innerHTML = iteminfo.paintwear;
@@ -123,21 +123,4 @@ function ping() {
   };
 
   request.send("ping");
-}
-
-var knives = [
-  "Bayonet",
-  "Butterfly Knife",
-  "Falchion Knife",
-  "Flip Knife",
-  "Gut Knife",
-  "Huntsman Knife",
-  "Karambit",
-  "M9 Bayonet",
-  "Shadow Daggers",
-  "Bowie Knife",
-];
-
-function isKnife(item_name) {
-  return knives.indexOf(item_name) > -1;
 }
