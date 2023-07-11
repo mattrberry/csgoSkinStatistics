@@ -96,7 +96,8 @@ if __name__ == "__main__":
         sys.exit()
 
     LOG.info("Starting HTTP server...")
-    http_server = WSGIServer(("", 5000), app, log=None)
+    wsgi_server_log = logging.getLogger("HTTP Server")
+    http_server = WSGIServer(("", 5000), app, log=wsgi_server_log, error_log=wsgi_server_log)
 
     try:
         http_server.serve_forever()
