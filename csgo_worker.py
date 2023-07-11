@@ -164,6 +164,8 @@ class CSGOWorker(object):
             special = str(scaled_fade_percent) + "%"
         elif pattern == "Doppler" or pattern == "Gamma Doppler":
             special = const.doppler[paintindex]
+        elif pattern == "Crimson Kimono" and paintseed in const.kimonos:
+            special = const.kimonos[paintseed]
 
         return json.dumps(
             {
