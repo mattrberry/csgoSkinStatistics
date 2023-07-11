@@ -148,8 +148,6 @@ class CSGOWorker(object):
         special = ""
         if pattern == "Marble Fade" and weapon_type in const.marbles:
             special = const.marbles[weapon_type].get(paintseed, special)
-            if not special:
-                LOG.info("Non-indexed %s | Marble Fade" % weapon_type)
         elif pattern == "Fade" and weapon_type in const.fades:
             minimum_fade_percent, order_reversed = const.fades[weapon_type]
             fade_index = const.order.index(paintseed)
