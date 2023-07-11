@@ -44,7 +44,8 @@ fades = {
     "Skeleton Knife": (80, False),
 }
 
-order = [
+# All fades are selected along the pattern sheet in the same way, although direction can be reversed. See above.
+fade_order = [
     146,
     602,
     393,

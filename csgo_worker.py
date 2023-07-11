@@ -150,7 +150,7 @@ class CSGOWorker(object):
             special = const.marbles[weapon_type].get(paintseed, special)
         elif pattern == "Fade" and weapon_type in const.fades:
             minimum_fade_percent, order_reversed = const.fades[weapon_type]
-            fade_index = const.order.index(paintseed)
+            fade_index = const.fade_order.index(paintseed)
             if order_reversed:
                 fade_index = 1000 - fade_index
             actual_fade_percent = fade_index / 1001
