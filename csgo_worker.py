@@ -135,19 +135,19 @@ class CSGOWorker(object):
         stattrak: int,
         timestamp: int,
     ) -> str:
-        defindex_str = str(defindex)
-        weapon_type = const.items.get(defindex_str, defindex_str)
-        if weapon_type is defindex_str:
-            LOG.warn(f"Item {defindex_str} is missing from constants")
+        weapon_type = const.items.get(defindex)
+        if not weapon_type:
+            LOG.warn(f"Item {defindex} is missing from constants")
+            weapon_type = str(defindex)
 
-        paintindex_str = str(paintindex)
-        pattern = const.skins.get(paintindex_str, paintindex_str)
-        if pattern is paintindex_str:
-            LOG.warn(f"Skin {paintindex_str} is missing from constants")
+        pattern = const.skins.get(paintindex)
+        if not pattern:
+            LOG.warn(f"Skin {paintindex} is missing from constants")
+            pattern = str(paintindex)
 
         special = ""
         if pattern == "Marble Fade" and weapon_type in const.marbles:
-            special = const.marbles[weapon_type].get(str(paintseed), special)
+            special = const.marbles[weapon_type].get(paintseed, special)
             if not special:
                 LOG.info("Non-indexed %s | Marble Fade" % weapon_type)
         elif pattern == "Fade" and weapon_type in const.fades:
