@@ -1,7 +1,5 @@
-function display(data, loadTime) {
+function display(iteminfo, loadTime) {
   try {
-    const iteminfo = JSON.parse(data);
-
     document.getElementById(
       "item_name"
     ).innerHTML = `${iteminfo.weapon} | ${iteminfo.skin} <span class="pop">${iteminfo.special}</span>`;
@@ -85,33 +83,17 @@ window.addEventListener("load", function () {
 
 function post(requestData) {
   const start = performance.now();
-
-  const request = new XMLHttpRequest();
-  request.open("GET", `/api?${new URLSearchParams(requestData)}`, true);
-  request.addEventListener("load", function () {
-    display(request.response, ((performance.now() - start) / 1000).toFixed(2));
-  });
-
-  request.send();
+  fetch(`/api?${new URLSearchParams(requestData)}`)
+    .then((response) => response.json())
+    .then((iteminfo) => display(iteminfo, ((performance.now() - start) / 1000).toFixed(2)));
 }
 
 function ping() {
   const start = performance.now();
-
-  const request = new XMLHttpRequest();
-  request.open("POST", "/ping", true);
-  request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-  request.addEventListener("readystatechange", function () {
-    if (
-      request.readyState === XMLHttpRequest.DONE &&
-      request.status === 200 &&
-      request.response === "pong"
-    ) {
-      document.getElementById("ping").innerHTML = `Ping:${Math.floor(
+  fetch("/ping", { method: "POST" }).then(
+    (_) =>
+      (document.getElementById("ping").innerHTML = `Ping:${Math.floor(
         performance.now() - start
-      )}ms`;
-    }
-  });
-
-  request.send("ping");
+      )}ms`)
+  );
 }
