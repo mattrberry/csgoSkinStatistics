@@ -1,14 +1,10 @@
 function display(data, loadTime) {
   try {
-    iteminfo = JSON.parse(data);
+    const iteminfo = JSON.parse(data);
 
-    document.getElementById("item_name").innerHTML =
-      iteminfo.weapon +
-      " | " +
-      iteminfo.skin +
-      ' <span class="pop">' +
-      iteminfo.special +
-      "</span>";
+    document.getElementById(
+      "item_name"
+    ).innerHTML = `${iteminfo.weapon} | ${iteminfo.skin} <span class="pop">${iteminfo.special}</span>`;
     document.getElementById("item_name").classList.remove("knife");
     if (iteminfo.isKnife) {
       document.getElementById("item_name").classList.add("knife");
@@ -16,8 +12,9 @@ function display(data, loadTime) {
     document.getElementById("item_paintwear").innerHTML = iteminfo.paintwear;
     document.getElementById("item_itemid").innerHTML = iteminfo.itemid;
     document.getElementById("item_paintseed").innerHTML = iteminfo.paintseed;
-    document.getElementById("status").innerHTML =
-      "Loaded in " + loadTime + " seconds";
+    document.getElementById(
+      "status"
+    ).innerHTML = `Loaded in ${loadTime} seconds`;
     document.getElementById("stattrak-indicator").classList.remove("yes");
     if (iteminfo.stattrak) {
       document.getElementById("stattrak-indicator").classList.add("yes");
@@ -33,94 +30,88 @@ function display(data, loadTime) {
   }
 }
 
-window.onload = function () {
+window.addEventListener("load", function () {
   document
     .getElementById("textbox")
     .addEventListener("keydown", function (event) {
-      if (event.keyCode === 13) {
+      if (event.code === "Enter") {
         event.preventDefault();
         document.getElementById("button").click();
       }
     });
 
-  document.getElementById("button").onclick = function (element) {
-    element.target.blur();
+  document
+    .getElementById("button")
+    .addEventListener("click", function (element) {
+      element.target.blur();
 
-    var box = document.getElementById("textbox").value;
+      const input = document.getElementById("textbox").value;
+      try {
+        const [match, type, paramType, paramA, paramD] = input.match(
+          /([SM])(\d+)A(\d+)D(\d+)$/
+        );
+        const requestData = {
+          s: type === "S" ? paramType : "0",
+          m: type === "S" ? "0" : paramType,
+          a: paramA,
+          d: paramD,
+        };
 
-    try {
-      var match = box.match(/([SM])(\d+)A(\d+)D(\d+)$/);
-      box = match[0];
-      type = match[1];
-      var requestData = {
-        s: type === "S" ? match[2] : "0",
-        a: match[3],
-        d: match[4],
-        m: type === "S" ? "0" : match[2],
-      };
+        document.getElementById("textbox").value = match;
+        window.location.hash = match;
 
-      document.getElementById("textbox").value = box;
-      window.location.hash = box;
-
-      post(requestData);
-    } catch (e) {
-      document.getElementById("textbox").value = "Not a valid inspect link";
-    }
-  };
+        post(requestData);
+      } catch (e) {
+        document.getElementById("textbox").value = "Not a valid inspect link";
+      }
+    });
 
   if (window.location.hash) {
-    var hashURL = window.location.hash.substring(1);
+    const hashURL = window.location.hash.substring(1);
     document.getElementById("textbox").value = hashURL;
     document.getElementById("button").click();
   } else {
     post({
       s: "76561198261551396",
+      m: "0",
       a: "19621162652",
       d: "13871278417611896371",
-      m: "0",
     });
   }
 
   ping();
   setInterval(ping, 30000);
-};
-
-function jsonToUrl(json) {
-  s = "?";
-  for (var key in json) {
-    s += key + "=" + json[key] + "&";
-  }
-  return s.substring(0, s.length - 1);
-}
+});
 
 function post(requestData) {
-  var start = performance.now();
+  const start = performance.now();
 
-  var request = new XMLHttpRequest();
-  request.open("GET", "/api" + jsonToUrl(requestData), true);
-  request.onload = function () {
+  const request = new XMLHttpRequest();
+  request.open("GET", `/api?${new URLSearchParams(requestData)}`, true);
+  request.addEventListener("load", function () {
     display(request.response, ((performance.now() - start) / 1000).toFixed(2));
-  };
+  });
 
   request.send();
 }
 
 function ping() {
-  var start = performance.now();
+  const start = performance.now();
 
-  var request = new XMLHttpRequest();
+  const request = new XMLHttpRequest();
   request.open("POST", "/ping", true);
   request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-  request.onreadystatechange = function () {
+  request.addEventListener("readystatechange", function () {
     if (
       request.readyState === XMLHttpRequest.DONE &&
       request.status === 200 &&
       request.response === "pong"
     ) {
-      document.getElementById("ping").innerHTML =
-        "Ping:" + Math.floor(performance.now() - start).toString() + "ms";
+      document.getElementById("ping").innerHTML = `Ping:${Math.floor(
+        performance.now() - start
+      )}ms`;
     }
-  };
+  });
 
   request.send("ping");
 }
