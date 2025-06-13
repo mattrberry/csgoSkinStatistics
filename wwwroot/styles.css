@@ -30,15 +30,6 @@ html {
   outline: none;
 }
 
-#ping {
-  color: var(--pop);
-  position: absolute;
-  top: 0;
-  left: 0;
-  margin: 4px;
-  font-size: 14px;
-}
-
 .github-corner svg {
   fill: var(--dark);
   color: var(--gray);

@@ -76,9 +76,6 @@ window.addEventListener("load", function () {
       d: "13871278417611896371",
     });
   }
-
-  ping();
-  setInterval(ping, 30000);
 });
 
 function post(requestData) {
@@ -86,14 +83,4 @@ function post(requestData) {
   fetch(`/api?${new URLSearchParams(requestData)}`)
     .then((response) => response.json())
     .then((iteminfo) => display(iteminfo, ((performance.now() - start) / 1000).toFixed(2)));
-}
-
-function ping() {
-  const start = performance.now();
-  fetch("/ping", { method: "POST" }).then(
-    (_) =>
-      (document.getElementById("ping").innerHTML = `Ping:${Math.floor(
-        performance.now() - start
-      )}ms`)
-  );
 }

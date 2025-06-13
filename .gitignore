@@ -1,5 +1,5 @@
-__pycache__/
-*.pyc
 .idea/
 searches.db
-venv/
+bin/
+obj/
+.claude/
