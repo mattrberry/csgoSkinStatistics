@@ -1,17 +1,10 @@
 # csgoSkinStatistics
 
-A very simple site designed to hit csgo's game coordinator and return information about csgo items.
-
-### Requirements
-
-This repository has 3 external dependencies. These are:
-+ Flask
-+ ValvePython/steam https://github.com/ValvePython/steam
-+ ValvePython/csgo https://github.com/ValvePython/csgo
+A very simple site designed to hit CS2's game coordinator and return information about CS2 items.
 
 ### Installation and Setup
 
-After cloning this repository, simply run the skinstats module with Python 3. If you have set the environment variables `steam_user` and `steam_pass`, it will use those. Otherwise, you will be prompted to input those manually. The page will be on localhost:5000.
+After cloning this repository, set the `STEAM_USERNAME` and `STEAM_PASSWORD` environment variables, and run with dotnet. The page will be on localhost:5000.
 
 ### API
 
@@ -71,13 +64,3 @@ Example Market Item
 ##### Errors
 
 For right now, errors come in many non-conformed shapes and sizes. Hopefully you don't run into any, but if you do, make sure your input exactly matches the examples. If you still have problems, feel free to open an Issue on GitHub.
-
-### Todo (recent)
-- [x] Fix items with apostrophe in name (should come along with previous todo and making response easier to parse)
-- [x] Show if a weapon is stattrak
-- [x] Switch to actually using a database rather than a flat text file
-- [x] API
-- [ ] API rate limiting
-- [ ] Verbose, specific errors for API
-- [ ] More servers
-- [ ] Load balancing
