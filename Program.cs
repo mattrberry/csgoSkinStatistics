@@ -314,6 +314,20 @@ namespace CSGOSkinAPI.Services
             Console.WriteLine($"Steam client disconnected. User initiated: {callback.UserInitiated}");
             _isConnected = false;
             _isLoggedIn = false;
+
+            if (!callback.UserInitiated && _isRunning)
+            {
+                Console.WriteLine("Disconnection was not user-initiated, attempting to reconnect...");
+                _ = Task.Run(async () =>
+                {
+                    await Task.Delay(5000); // Wait 5 seconds before reconnecting
+                    if (_isRunning && !_isConnected)
+                    {
+                        Console.WriteLine("Reconnecting to Steam...");
+                        _steamClient.Connect();
+                    }
+                });
+            }
         }
 
         private void OnLoggedOn(SteamUser.LoggedOnCallback callback)
