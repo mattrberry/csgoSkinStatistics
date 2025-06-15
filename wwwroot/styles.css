@@ -4,6 +4,7 @@
   --light: #2f3d4a;
   --pop: #2ecc71;
   --text: #ecf0f1;
+  --error: #cc492f;
 }
 
 .pop {
@@ -190,6 +191,13 @@ input[type="text"]:hover {
 
 input[type="text"]:not(:hover):not(:focus) {
   animation: light-dark 0.5s forwards;
+}
+
+#error-display {
+  color: var(--error);
+  text-align: center;
+  margin: 8px auto;
+  max-width: 608px;
 }
 
 #inspect_button_container {

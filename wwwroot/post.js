@@ -1,6 +1,11 @@
 let elements;
 
 function display(iteminfo, loadTime) {
+  if (iteminfo.error) {
+    handleError(iteminfo.error);
+    return;
+  }
+  
   try {
     elements.itemName.innerHTML = `${iteminfo.weapon} | ${iteminfo.skin} <span class="pop">${iteminfo.special}</span>`;
     elements.itemName.classList.remove("knife");
@@ -24,15 +29,26 @@ function display(iteminfo, loadTime) {
       elements.inspectButton.href = "#";
     }
   } catch (e) {
-    elements.itemName.innerHTML = "-";
-    elements.itemName.classList.remove("knife");
-    elements.itemPaintwear.innerHTML = "-";
-    elements.itemItemid.innerHTML = "-";
-    elements.itemPaintseed.innerHTML = "-";
-    elements.stattrakIndicator.classList.remove("yes");
-    elements.inspectButton.href = "#";
-    elements.status.innerHTML = data;
+    handleError("An error occurred while displaying the item data");
   }
+}
+
+function resetFields() {
+  elements.itemName.innerHTML = "-";
+  elements.itemName.classList.remove("knife");
+  elements.itemPaintwear.innerHTML = "-";
+  elements.itemItemid.innerHTML = "-";
+  elements.itemPaintseed.innerHTML = "-";
+  elements.status.innerHTML = "";
+  elements.stattrakIndicator.classList.remove("yes");
+  elements.inspectButton.href = "#";
+  elements.errorDisplay.style.display = "none";
+}
+
+function handleError(errorMessage) {
+  resetFields();
+  elements.errorDisplay.innerHTML = errorMessage;
+  elements.errorDisplay.style.display = "block";
 }
 
 window.addEventListener("load", function () {
@@ -46,6 +62,7 @@ window.addEventListener("load", function () {
     inspectButton: document.getElementById("inspect_button"),
     textbox: document.getElementById("textbox"),
     button: document.getElementById("button"),
+    errorDisplay: document.getElementById("error-display"),
   };
 
   elements.textbox.addEventListener("keydown", function (event) {
@@ -73,6 +90,7 @@ window.addEventListener("load", function () {
       elements.textbox.value = match;
       window.location.hash = match;
 
+      resetFields();
       post(requestData);
     } catch (e) {
       elements.textbox.value = "Not a valid inspect link";

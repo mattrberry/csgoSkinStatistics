@@ -87,7 +87,7 @@ namespace CSGOSkinAPI.Controllers
                 if (itemInfo == null)
                 {
                     Console.WriteLine("Item not found in Steam GC");
-                    return NotFound(new { error = "Item not found" });
+                    return NotFound(new { error = "Steam GC did not return an item" });
                 }
 
                 await dbService.SaveItemAsync(itemInfo);
