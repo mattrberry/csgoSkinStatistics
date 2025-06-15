@@ -162,6 +162,8 @@ namespace CSGOSkinAPI.Services
         private bool _isRunning = false;
         private readonly TaskCompletionSource<bool> _connectionTcs = new();
         private readonly ConcurrentDictionary<ulong, TaskCompletionSource<ItemInfo?>> _pendingRequests = new();
+        private readonly SemaphoreSlim _rateLimitSemaphore = new(1, 1);
+        private DateTime _lastRequestTime = DateTime.MinValue;
 
         private readonly string? _steamUsername = Environment.GetEnvironmentVariable("STEAM_USERNAME");
         private readonly string? _steamPassword = Environment.GetEnvironmentVariable("STEAM_PASSWORD");
@@ -188,38 +190,61 @@ namespace CSGOSkinAPI.Services
                 await ConnectAsync();
             }
 
-            var jobId = a; // Use A (itemid) parameter as Job ID            
-            if (_pendingRequests.ContainsKey(jobId))
+            // Rate limiting: ensure at least 1 second between requests. The GC seems to allow more frequent
+            // requests, but I haven't determined the exact limits. For example, every 5th query fails with
+            // an interval of 800ms.
+            await _rateLimitSemaphore.WaitAsync();
+            try
             {
-                Console.WriteLine($"Warning: JobID {jobId} already exists in pending requests");
-                _pendingRequests.TryRemove(jobId, out _);
+                var timeSinceLastRequest = DateTime.UtcNow - _lastRequestTime;
+                var minimumInterval = TimeSpan.FromSeconds(1);
+
+                if (timeSinceLastRequest < minimumInterval)
+                {
+                    var waitTime = minimumInterval - timeSinceLastRequest;
+                    Console.WriteLine($"Rate limiting: waiting {waitTime.TotalMilliseconds:F0}ms before next request");
+                    await Task.Delay(waitTime);
+                }
+
+                _lastRequestTime = DateTime.UtcNow;
+
+                var jobId = a; // Use A (itemid) parameter as Job ID            
+                if (_pendingRequests.ContainsKey(jobId))
+                {
+                    Console.WriteLine($"Warning: JobID {jobId} already exists in pending requests");
+                    _pendingRequests.TryRemove(jobId, out _);
+                }
+
+                var tcs = new TaskCompletionSource<ItemInfo?>();
+                _pendingRequests[jobId] = tcs;
+
+                var request = new ClientGCMsgProtobuf<CMsgGCCStrike15_v2_Client2GCEconPreviewDataBlockRequest>(
+                    (uint)ECsgoGCMsg.k_EMsgGCCStrike15_v2_Client2GCEconPreviewDataBlockRequest);
+                // request.SourceJobID = jobId;
+                request.Body.param_s = s;
+                request.Body.param_a = a;
+                request.Body.param_d = d;
+                request.Body.param_m = m;
+
+                _steamGC.Send(request, 730);
+
+                Console.WriteLine("Waiting for GC response...");
+                var timeoutTask = Task.Delay(TimeSpan.FromSeconds(3));
+                var completedTask = await Task.WhenAny(tcs.Task, timeoutTask);
+
+                if (completedTask == timeoutTask)
+                {
+                    Console.WriteLine($"GC request timed out for JobID: {jobId}");
+                    _pendingRequests.TryRemove(jobId, out _);
+                    tcs.SetResult(null);
+                }
+
+                return await tcs.Task;
             }
-
-            var tcs = new TaskCompletionSource<ItemInfo?>();
-            _pendingRequests[jobId] = tcs;
-
-            var request = new ClientGCMsgProtobuf<CMsgGCCStrike15_v2_Client2GCEconPreviewDataBlockRequest>(
-                (uint)ECsgoGCMsg.k_EMsgGCCStrike15_v2_Client2GCEconPreviewDataBlockRequest);
-            // request.SourceJobID = jobId;
-            request.Body.param_s = s;
-            request.Body.param_a = a;
-            request.Body.param_d = d;
-            request.Body.param_m = m;
-
-            _steamGC.Send(request, 730);
-
-            Console.WriteLine("Waiting for GC response...");
-            var timeoutTask = Task.Delay(TimeSpan.FromSeconds(3));
-            var completedTask = await Task.WhenAny(tcs.Task, timeoutTask);
-
-            if (completedTask == timeoutTask)
+            finally
             {
-                Console.WriteLine($"GC request timed out for JobID: {jobId}");
-                _pendingRequests.TryRemove(jobId, out _);
-                tcs.SetResult(null);
+                _rateLimitSemaphore.Release();
             }
-
-            return await tcs.Task;
         }
 
         public async Task ConnectAsync()
