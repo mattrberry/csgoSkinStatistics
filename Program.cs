@@ -161,7 +161,7 @@ namespace CSGOSkinAPI.Services
         private bool _isLoggedIn = false;
         private bool _isRunning = false;
         private readonly TaskCompletionSource<bool> _connectionTcs = new();
-        private readonly ConcurrentDictionary<ulong, TaskCompletionSource<ItemInfo?>> _pendingRequests = new();
+        private readonly ConcurrentDictionary<ulong, List<TaskCompletionSource<ItemInfo?>>> _pendingRequests = new();
         private readonly SemaphoreSlim _rateLimitSemaphore = new(1, 1);
         private DateTime _lastRequestTime = DateTime.MinValue;
 
@@ -190,61 +190,89 @@ namespace CSGOSkinAPI.Services
                 await ConnectAsync();
             }
 
-            // Rate limiting: ensure at least 1 second between requests. The GC seems to allow more frequent
-            // requests, but I haven't determined the exact limits. For example, every 5th query fails with
-            // an interval of 800ms.
-            await _rateLimitSemaphore.WaitAsync();
-            try
+            var jobId = a; // Use A (itemid) parameter as Job ID            
+            var tcs = new TaskCompletionSource<ItemInfo?>();
+            bool shouldSendRequest = false;
+
+            _pendingRequests.AddOrUpdate(jobId,
+                // If key doesn't exist, create new list with this request
+                new List<TaskCompletionSource<ItemInfo?>> { tcs },
+                // If key exists, add to existing list
+                (key, existingList) =>
+                {
+                    lock (existingList)
+                    {
+                        existingList.Add(tcs);
+                    }
+                    return existingList;
+                });
+
+            // Only send GC request if this is the first request for this itemid
+            shouldSendRequest = _pendingRequests[jobId].Count == 1;
+
+            if (shouldSendRequest)
             {
-                var timeSinceLastRequest = DateTime.UtcNow - _lastRequestTime;
-                var minimumInterval = TimeSpan.FromSeconds(1);
-
-                if (timeSinceLastRequest < minimumInterval)
+                // Rate limiting: ensure at least 1 second between requests. The GC seems to allow more frequent
+                // requests, but I haven't determined the exact limits. For example, every 5th query fails with
+                // an interval of 800ms.
+                await _rateLimitSemaphore.WaitAsync();
+                try
                 {
-                    var waitTime = minimumInterval - timeSinceLastRequest;
-                    Console.WriteLine($"Rate limiting: waiting {waitTime.TotalMilliseconds:F0}ms before next request");
-                    await Task.Delay(waitTime);
+                    var timeSinceLastRequest = DateTime.UtcNow - _lastRequestTime;
+                    var minimumInterval = TimeSpan.FromSeconds(1);
+
+                    if (timeSinceLastRequest < minimumInterval)
+                    {
+                        var waitTime = minimumInterval - timeSinceLastRequest;
+                        Console.WriteLine($"Rate limiting: waiting {waitTime.TotalMilliseconds:F0}ms before next request");
+                        await Task.Delay(waitTime);
+                    }
+
+                    _lastRequestTime = DateTime.UtcNow;
+
+                    var request = new ClientGCMsgProtobuf<CMsgGCCStrike15_v2_Client2GCEconPreviewDataBlockRequest>(
+                        (uint)ECsgoGCMsg.k_EMsgGCCStrike15_v2_Client2GCEconPreviewDataBlockRequest);
+                    // request.SourceJobID = jobId;
+                    request.Body.param_s = s;
+                    request.Body.param_a = a;
+                    request.Body.param_d = d;
+                    request.Body.param_m = m;
+
+                    _steamGC.Send(request, 730);
+                    Console.WriteLine($"Sent GC request for itemid {jobId}");
                 }
-
-                _lastRequestTime = DateTime.UtcNow;
-
-                var jobId = a; // Use A (itemid) parameter as Job ID            
-                if (_pendingRequests.ContainsKey(jobId))
+                finally
                 {
-                    Console.WriteLine($"Warning: JobID {jobId} already exists in pending requests");
-                    _pendingRequests.TryRemove(jobId, out _);
+                    _rateLimitSemaphore.Release();
                 }
-
-                var tcs = new TaskCompletionSource<ItemInfo?>();
-                _pendingRequests[jobId] = tcs;
-
-                var request = new ClientGCMsgProtobuf<CMsgGCCStrike15_v2_Client2GCEconPreviewDataBlockRequest>(
-                    (uint)ECsgoGCMsg.k_EMsgGCCStrike15_v2_Client2GCEconPreviewDataBlockRequest);
-                // request.SourceJobID = jobId;
-                request.Body.param_s = s;
-                request.Body.param_a = a;
-                request.Body.param_d = d;
-                request.Body.param_m = m;
-
-                _steamGC.Send(request, 730);
-
-                Console.WriteLine("Waiting for GC response...");
-                var timeoutTask = Task.Delay(TimeSpan.FromSeconds(3));
-                var completedTask = await Task.WhenAny(tcs.Task, timeoutTask);
-
-                if (completedTask == timeoutTask)
-                {
-                    Console.WriteLine($"GC request timed out for JobID: {jobId}");
-                    _pendingRequests.TryRemove(jobId, out _);
-                    tcs.SetResult(null);
-                }
-
-                return await tcs.Task;
             }
-            finally
+            else
             {
-                _rateLimitSemaphore.Release();
+                Console.WriteLine($"Request for itemid {jobId} already pending, waiting for existing request...");
             }
+
+            Console.WriteLine("Waiting for GC response...");
+            var timeoutTask = Task.Delay(TimeSpan.FromSeconds(3));
+            var completedTask = await Task.WhenAny(tcs.Task, timeoutTask);
+
+            if (completedTask == timeoutTask)
+            {
+                Console.WriteLine($"GC request timed out for JobID: {jobId}");
+                if (_pendingRequests.TryGetValue(jobId, out var timedOutList))
+                {
+                    lock (timedOutList)
+                    {
+                        timedOutList.Remove(tcs);
+                        if (timedOutList.Count == 0)
+                        {
+                            _pendingRequests.TryRemove(jobId, out _);
+                        }
+                    }
+                }
+                tcs.SetResult(null);
+            }
+
+            return await tcs.Task;
         }
 
         public async Task ConnectAsync()
@@ -382,13 +410,14 @@ namespace CSGOSkinAPI.Services
                 var response = new ClientGCMsgProtobuf<CMsgGCCStrike15_v2_Client2GCEconPreviewDataBlockResponse>(callback.Message);
                 var responseItemId = response.Body.iteminfo?.itemid ?? 0;
 
-                if (_pendingRequests.TryGetValue(responseItemId, out var pendingTcs))
+                if (_pendingRequests.TryGetValue(responseItemId, out var pendingList))
                 {
+                    ItemInfo? item = null;
                     if (response.Body.iteminfo != null)
                     {
                         var itemInfo = response.Body.iteminfo;
                         var paintwear = BitConverter.ToSingle(BitConverter.GetBytes(itemInfo.paintwear), 0);
-                        var item = new ItemInfo
+                        item = new ItemInfo
                         {
                             ItemId = itemInfo.itemid,
                             DefIndex = (int)itemInfo.defindex,
@@ -401,13 +430,20 @@ namespace CSGOSkinAPI.Services
                             Origin = (int)itemInfo.origin,
                             StatTrak = itemInfo.ShouldSerializekilleatervalue()
                         };
-
-                        pendingTcs.SetResult(item);
                     }
                     else
                     {
                         Console.WriteLine("No item info in response");
-                        pendingTcs.SetResult(null);
+                    }
+
+                    // Resolve all pending requests for this itemid
+                    lock (pendingList)
+                    {
+                        Console.WriteLine($"Resolving {pendingList.Count} pending requests for itemid {responseItemId}");
+                        foreach (var tcs in pendingList)
+                        {
+                            tcs.SetResult(item);
+                        }
                     }
                     _pendingRequests.TryRemove(responseItemId, out _);
                 }
