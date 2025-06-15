@@ -192,6 +192,41 @@ input[type="text"]:not(:hover):not(:focus) {
   animation: light-dark 0.5s forwards;
 }
 
+#inspect_button_container {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
+}
+
+#inspect_button {
+  display: inline-block;
+  padding: 12px 24px;
+  background-color: var(--pop);
+  color: var(--gray);
+  border-radius: 4px;
+  font-weight: bold;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  cursor: pointer;
+
+  &:hover:not([href="#"]) {
+    background-color: #27ae60;
+    transform: translateY(-1px);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+
+  &[href="#"] {
+    background-color: var(--light);
+    color: #7f8c8d;
+    cursor: not-allowed;
+    pointer-events: none;
+    opacity: 0.6;
+  }
+}
+
 @media (max-width: 608px) {
   input[type="text"] {
     width: 100vw;

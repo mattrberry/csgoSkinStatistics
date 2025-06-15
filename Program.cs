@@ -80,7 +80,7 @@ namespace CSGOSkinAPI.Controllers
                 if (existingItem != null)
                 {
                     constDataService.FinalizeAttributes(existingItem);
-                    return Ok(CreateResponse(existingItem));
+                    return Ok(CreateResponse(existingItem, s, a, d, m));
                 }
 
                 var itemInfo = await steamService.GetItemInfoAsync(s, a, d, m);
@@ -92,7 +92,7 @@ namespace CSGOSkinAPI.Controllers
 
                 await dbService.SaveItemAsync(itemInfo);
                 constDataService.FinalizeAttributes(itemInfo);
-                return Ok(CreateResponse(itemInfo));
+                return Ok(CreateResponse(itemInfo, s, a, d, m));
             }
             catch (Exception ex)
             {
@@ -127,7 +127,7 @@ namespace CSGOSkinAPI.Controllers
             return (s, a, d, m);
         }
 
-        private static object CreateResponse(ItemInfo item)
+        private static object CreateResponse(ItemInfo item, ulong s, ulong a, ulong d, ulong m)
         {
             return new
             {
@@ -143,7 +143,11 @@ namespace CSGOSkinAPI.Controllers
                 stattrak = item.StatTrak,
                 special = item.Special,
                 weapon = item.Weapon,
-                skin = item.Skin
+                skin = item.Skin,
+                s,
+                a,
+                d,
+                m
             };
         }
     }

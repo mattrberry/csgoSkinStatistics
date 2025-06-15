@@ -17,6 +17,15 @@ function display(iteminfo, loadTime) {
     if (iteminfo.stattrak) {
       document.getElementById("stattrak-indicator").classList.add("yes");
     }
+
+    const inspectButton = document.getElementById("inspect_button");
+    if (iteminfo.s && iteminfo.s !== 0) {
+      inspectButton.href = `steam://rungame/730/76561202255233023/+csgo_econ_action_preview%20S${iteminfo.s}A${iteminfo.a}D${iteminfo.d}`;
+    } else if (iteminfo.m && iteminfo.m !== 0) {
+      inspectButton.href = `steam://rungame/730/76561202255233023/+csgo_econ_action_preview%20M${iteminfo.m}A${iteminfo.a}D${iteminfo.d}`;
+    } else {
+      inspectButton.href = "#";
+    }
   } catch (e) {
     document.getElementById("item_name").innerHTML = "-";
     document.getElementById("item_name").classList.remove("knife");
@@ -24,6 +33,7 @@ function display(iteminfo, loadTime) {
     document.getElementById("item_itemid").innerHTML = "-";
     document.getElementById("item_paintseed").innerHTML = "-";
     document.getElementById("stattrak-indicator").classList.remove("yes");
+    document.getElementById("inspect_button").href = "#";
     document.getElementById("status").innerHTML = data;
   }
 }
