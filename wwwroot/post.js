@@ -1,83 +1,88 @@
+let elements;
+
 function display(iteminfo, loadTime) {
   try {
-    document.getElementById(
-      "item_name"
-    ).innerHTML = `${iteminfo.weapon} | ${iteminfo.skin} <span class="pop">${iteminfo.special}</span>`;
-    document.getElementById("item_name").classList.remove("knife");
+    elements.itemName.innerHTML = `${iteminfo.weapon} | ${iteminfo.skin} <span class="pop">${iteminfo.special}</span>`;
+    elements.itemName.classList.remove("knife");
     if (iteminfo.isKnife) {
-      document.getElementById("item_name").classList.add("knife");
+      elements.itemName.classList.add("knife");
     }
-    document.getElementById("item_paintwear").innerHTML = iteminfo.paintwear;
-    document.getElementById("item_itemid").innerHTML = iteminfo.itemid;
-    document.getElementById("item_paintseed").innerHTML = iteminfo.paintseed;
-    document.getElementById(
-      "status"
-    ).innerHTML = `Loaded in ${loadTime} seconds`;
-    document.getElementById("stattrak-indicator").classList.remove("yes");
+    elements.itemPaintwear.innerHTML = iteminfo.paintwear;
+    elements.itemItemid.innerHTML = iteminfo.itemid;
+    elements.itemPaintseed.innerHTML = iteminfo.paintseed;
+    elements.status.innerHTML = `Loaded in ${loadTime} seconds`;
+    elements.stattrakIndicator.classList.remove("yes");
     if (iteminfo.stattrak) {
-      document.getElementById("stattrak-indicator").classList.add("yes");
+      elements.stattrakIndicator.classList.add("yes");
     }
 
-    const inspectButton = document.getElementById("inspect_button");
     if (iteminfo.s && iteminfo.s !== 0) {
-      inspectButton.href = `steam://rungame/730/76561202255233023/+csgo_econ_action_preview%20S${iteminfo.s}A${iteminfo.a}D${iteminfo.d}`;
+      elements.inspectButton.href = `steam://rungame/730/76561202255233023/+csgo_econ_action_preview%20S${iteminfo.s}A${iteminfo.a}D${iteminfo.d}`;
     } else if (iteminfo.m && iteminfo.m !== 0) {
-      inspectButton.href = `steam://rungame/730/76561202255233023/+csgo_econ_action_preview%20M${iteminfo.m}A${iteminfo.a}D${iteminfo.d}`;
+      elements.inspectButton.href = `steam://rungame/730/76561202255233023/+csgo_econ_action_preview%20M${iteminfo.m}A${iteminfo.a}D${iteminfo.d}`;
     } else {
-      inspectButton.href = "#";
+      elements.inspectButton.href = "#";
     }
   } catch (e) {
-    document.getElementById("item_name").innerHTML = "-";
-    document.getElementById("item_name").classList.remove("knife");
-    document.getElementById("item_paintwear").innerHTML = "-";
-    document.getElementById("item_itemid").innerHTML = "-";
-    document.getElementById("item_paintseed").innerHTML = "-";
-    document.getElementById("stattrak-indicator").classList.remove("yes");
-    document.getElementById("inspect_button").href = "#";
-    document.getElementById("status").innerHTML = data;
+    elements.itemName.innerHTML = "-";
+    elements.itemName.classList.remove("knife");
+    elements.itemPaintwear.innerHTML = "-";
+    elements.itemItemid.innerHTML = "-";
+    elements.itemPaintseed.innerHTML = "-";
+    elements.stattrakIndicator.classList.remove("yes");
+    elements.inspectButton.href = "#";
+    elements.status.innerHTML = data;
   }
 }
 
 window.addEventListener("load", function () {
-  document
-    .getElementById("textbox")
-    .addEventListener("keydown", function (event) {
-      if (event.code === "Enter") {
-        event.preventDefault();
-        document.getElementById("button").click();
-      }
-    });
+  elements = {
+    itemName: document.getElementById("item_name"),
+    itemPaintwear: document.getElementById("item_paintwear"),
+    itemItemid: document.getElementById("item_itemid"),
+    itemPaintseed: document.getElementById("item_paintseed"),
+    status: document.getElementById("status"),
+    stattrakIndicator: document.getElementById("stattrak-indicator"),
+    inspectButton: document.getElementById("inspect_button"),
+    textbox: document.getElementById("textbox"),
+    button: document.getElementById("button"),
+  };
 
-  document
-    .getElementById("button")
-    .addEventListener("click", function (element) {
-      element.target.blur();
+  elements.textbox.addEventListener("keydown", function (event) {
+    if (event.code === "Enter") {
+      event.preventDefault();
+      elements.button.click();
+    }
+  });
 
-      const input = document.getElementById("textbox").value;
-      try {
-        const [match, type, paramType, paramA, paramD] = input.match(
-          /([SM])(\d+)A(\d+)D(\d+)$/
-        );
-        const requestData = {
-          s: type === "S" ? paramType : "0",
-          m: type === "S" ? "0" : paramType,
-          a: paramA,
-          d: paramD,
-        };
+  elements.button.addEventListener("click", function (element) {
+    element.target.blur();
 
-        document.getElementById("textbox").value = match;
-        window.location.hash = match;
+    const input = elements.textbox.value;
+    try {
+      const [match, type, paramType, paramA, paramD] = input.match(
+        /([SM])(\d+)A(\d+)D(\d+)$/
+      );
+      const requestData = {
+        s: type === "S" ? paramType : "0",
+        m: type === "S" ? "0" : paramType,
+        a: paramA,
+        d: paramD,
+      };
 
-        post(requestData);
-      } catch (e) {
-        document.getElementById("textbox").value = "Not a valid inspect link";
-      }
-    });
+      elements.textbox.value = match;
+      window.location.hash = match;
+
+      post(requestData);
+    } catch (e) {
+      elements.textbox.value = "Not a valid inspect link";
+    }
+  });
 
   if (window.location.hash) {
     const hashURL = window.location.hash.substring(1);
-    document.getElementById("textbox").value = hashURL;
-    document.getElementById("button").click();
+    elements.textbox.value = hashURL;
+    elements.button.click();
   } else {
     post({
       s: "76561198261551396",
@@ -92,5 +97,7 @@ function post(requestData) {
   const start = performance.now();
   fetch(`/api?${new URLSearchParams(requestData)}`)
     .then((response) => response.json())
-    .then((iteminfo) => display(iteminfo, ((performance.now() - start) / 1000).toFixed(2)));
+    .then((iteminfo) =>
+      display(iteminfo, ((performance.now() - start) / 1000).toFixed(2))
+    );
 }
