@@ -1,6 +1,8 @@
 let elements;
 
 function display(iteminfo, loadTime) {
+  stopLoading();
+  
   if (iteminfo.error) {
     handleError(iteminfo.error);
     return;
@@ -43,6 +45,20 @@ function resetFields() {
   elements.stattrakIndicator.classList.remove("yes");
   elements.inspectButton.href = "#";
   elements.errorDisplay.style.display = "none";
+}
+
+function startLoading() {
+  elements.itemName.parentElement.classList.add("loading");
+  elements.itemPaintwear.parentElement.classList.add("loading");
+  elements.itemItemid.parentElement.classList.add("loading");
+  elements.itemPaintseed.parentElement.classList.add("loading");
+}
+
+function stopLoading() {
+  elements.itemName.parentElement.classList.remove("loading");
+  elements.itemPaintwear.parentElement.classList.remove("loading");
+  elements.itemItemid.parentElement.classList.remove("loading");
+  elements.itemPaintseed.parentElement.classList.remove("loading");
 }
 
 function handleError(errorMessage) {
@@ -112,6 +128,7 @@ window.addEventListener("load", function () {
 });
 
 function post(requestData) {
+  startLoading();
   const start = performance.now();
   fetch(`/api?${new URLSearchParams(requestData)}`)
     .then((response) => response.json())

@@ -73,6 +73,19 @@ body {
   background-color: var(--dark);
   border-radius: 4px;
   position: relative;
+
+  &:has(> p) {
+    overflow: hidden;
+    &.loading::before {
+      content: "";
+      position: absolute;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, var(--light), transparent);
+      animation: shimmer 2s infinite;
+    }
+  }
 }
 
 .item_desc > p {
@@ -297,5 +310,18 @@ input[type="text"]:not(:hover):not(:focus) {
   }
   to {
     color: var(--text);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    left: -100%;
+  }
+  /* Delay by 1/4s to give GC time to respond. */
+  25% {
+    left: -100%;
+  }
+  100% {
+    left: 100%;
   }
 }

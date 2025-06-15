@@ -256,7 +256,7 @@ namespace CSGOSkinAPI.Services
             }
 
             Console.WriteLine("Waiting for GC response...");
-            var timeoutTask = Task.Delay(TimeSpan.FromSeconds(3));
+            var timeoutTask = Task.Delay(TimeSpan.FromSeconds(6));
             var completedTask = await Task.WhenAny(tcs.Task, timeoutTask);
 
             if (completedTask == timeoutTask)
