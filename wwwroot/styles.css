@@ -5,6 +5,7 @@
   --pop: #2ecc71;
   --text: #ecf0f1;
   --error: #cc492f;
+  --souvenir: #ccb22f;
 }
 
 .pop {
@@ -117,6 +118,12 @@ body {
 .knife::before {
   content: "\2605  ";
   color: var(--pop);
+  line-height: 0; /* Avoid changing height of box. */
+}
+
+.souvenir::before {
+  content: "Souvenir  ";
+  color: var(--souvenir);
 }
 
 #container {

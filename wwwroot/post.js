@@ -33,9 +33,12 @@ function display(iteminfo, loadTime) {
   
   try {
     elements.itemName.innerHTML = `${iteminfo.weapon} | ${iteminfo.skin} <span class="pop">${iteminfo.special}</span>`;
-    elements.itemName.classList.remove("knife");
-    if (iteminfo.isKnife) {
+    elements.itemName.classList.remove("knife", "souvenir");
+    if (iteminfo.quality === 3) {
       elements.itemName.classList.add("knife");
+    }
+    if (iteminfo.quality === 12) {
+      elements.itemName.classList.add("souvenir");
     }
     elements.itemPaintwear.innerHTML = iteminfo.paintwear;
     elements.itemWear.innerHTML = getWearFromFloat(iteminfo.paintwear);
@@ -62,7 +65,7 @@ function display(iteminfo, loadTime) {
 
 function resetFields() {
   elements.itemName.innerHTML = "-";
-  elements.itemName.classList.remove("knife");
+  elements.itemName.classList.remove("knife", "souvenir");
   elements.itemPaintwear.innerHTML = "-";
   elements.itemWear.innerHTML = "-";
   elements.itemRarity.innerHTML = "-";
