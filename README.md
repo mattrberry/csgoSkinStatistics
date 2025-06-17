@@ -4,7 +4,7 @@ A very simple site designed to hit CS2's game coordinator and return information
 
 ### Installation and Setup
 
-After cloning this repository, set the `STEAM_USERNAME` and `STEAM_PASSWORD` environment variables, and run with dotnet. The page will be on localhost:5000.
+After cloning this repository, set the `STEAM_USERNAME` and `STEAM_PASSWORD` environment variables or create a `steam-accounts.json` file following the example in `steam-accounts.json.example` if you need multiple accounts. Run with dotnet. The page will be on localhost:5000.
 
 ### API
 
