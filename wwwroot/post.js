@@ -1,5 +1,28 @@
 let elements;
 
+function getWearFromFloat(floatValue) {
+  const float = parseFloat(floatValue);
+  if (float < 0.07) return "Factory New";
+  if (float < 0.15) return "Minimal Wear";
+  if (float < 0.38) return "Field-Tested";
+  if (float < 0.45) return "Well-Worn";
+  return "Battle-Scarred";
+}
+
+function getRarityFromNumber(rarityNumber) {
+  const rarities = [
+    "Default",
+    "Consumer Grade",
+    "Industrial Grade",
+    "Mil-Spec",
+    "Restricted",
+    "Classified",
+    "Covert",
+    "Contraband"
+  ];
+  return rarities[rarityNumber] || "Unknown";
+}
+
 function display(iteminfo, loadTime) {
   stopLoading();
   
@@ -15,6 +38,8 @@ function display(iteminfo, loadTime) {
       elements.itemName.classList.add("knife");
     }
     elements.itemPaintwear.innerHTML = iteminfo.paintwear;
+    elements.itemWear.innerHTML = getWearFromFloat(iteminfo.paintwear);
+    elements.itemRarity.innerHTML = getRarityFromNumber(iteminfo.rarity);
     elements.itemItemid.innerHTML = iteminfo.itemid;
     elements.itemPaintseed.innerHTML = iteminfo.paintseed;
     elements.status.innerHTML = `Loaded in ${loadTime} seconds`;
@@ -39,6 +64,8 @@ function resetFields() {
   elements.itemName.innerHTML = "-";
   elements.itemName.classList.remove("knife");
   elements.itemPaintwear.innerHTML = "-";
+  elements.itemWear.innerHTML = "-";
+  elements.itemRarity.innerHTML = "-";
   elements.itemItemid.innerHTML = "-";
   elements.itemPaintseed.innerHTML = "-";
   elements.status.innerHTML = "";
@@ -50,6 +77,8 @@ function resetFields() {
 function startLoading() {
   elements.itemName.parentElement.classList.add("loading");
   elements.itemPaintwear.parentElement.classList.add("loading");
+  elements.itemWear.parentElement.classList.add("loading");
+  elements.itemRarity.parentElement.classList.add("loading");
   elements.itemItemid.parentElement.classList.add("loading");
   elements.itemPaintseed.parentElement.classList.add("loading");
 }
@@ -57,6 +86,8 @@ function startLoading() {
 function stopLoading() {
   elements.itemName.parentElement.classList.remove("loading");
   elements.itemPaintwear.parentElement.classList.remove("loading");
+  elements.itemWear.parentElement.classList.remove("loading");
+  elements.itemRarity.parentElement.classList.remove("loading");
   elements.itemItemid.parentElement.classList.remove("loading");
   elements.itemPaintseed.parentElement.classList.remove("loading");
 }
@@ -71,6 +102,8 @@ window.addEventListener("load", function () {
   elements = {
     itemName: document.getElementById("item_name"),
     itemPaintwear: document.getElementById("item_paintwear"),
+    itemWear: document.getElementById("item_wear"),
+    itemRarity: document.getElementById("item_rarity"),
     itemItemid: document.getElementById("item_itemid"),
     itemPaintseed: document.getElementById("item_paintseed"),
     status: document.getElementById("status"),
