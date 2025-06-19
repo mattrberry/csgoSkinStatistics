@@ -801,9 +801,8 @@ namespace CSGOSkinAPI.Services
             }
             else if (pattern == "Fade" && _constData.Fades?.ContainsKey(weaponType) == true)
             {
-                var fadeConfig = _constData.Fades[weaponType];
-                var minimumFadePercent = fadeConfig.MinimumFadePercent;
-                var orderReversed = fadeConfig.OrderReversed;
+                var orderReversed = _constData.Fades[weaponType];
+                const int minimumFadePercent = 80;
 
                 var fadeIndex = _constData.FadeOrder != null ? Array.IndexOf(_constData.FadeOrder, paintseed) : -1;
                 if (fadeIndex >= 0)
@@ -864,47 +863,11 @@ namespace CSGOSkinAPI.Models
         public string Password { get; set; } = string.Empty;
     }
 
-    public class FadeConfigConverter : JsonConverter<FadeConfig>
-    {
-        public override FadeConfig Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-        {
-            if (reader.TokenType != JsonTokenType.StartArray)
-                throw new JsonException("Expected array for FadeConfig");
-
-            using var document = JsonDocument.ParseValue(ref reader);
-            var array = document.RootElement;
-
-            if (array.GetArrayLength() != 2)
-                throw new JsonException("FadeConfig array must have 2 elements");
-
-            var minimumFadePercent = array[0].GetInt32();
-            var orderReversed = array[1].GetBoolean();
-
-            return new FadeConfig
-            {
-                MinimumFadePercent = minimumFadePercent,
-                OrderReversed = orderReversed
-            };
-        }
-
-        public override void Write(Utf8JsonWriter writer, FadeConfig value, JsonSerializerOptions options)
-        {
-            throw new NotSupportedException("Writing FadeConfig is not supported");
-        }
-    }
-
-    [JsonConverter(typeof(FadeConfigConverter))]
-    public class FadeConfig
-    {
-        public int MinimumFadePercent { get; set; }
-        public bool OrderReversed { get; set; }
-    }
-
     public class ConstData
     {
         public Dictionary<string, string>? Items { get; set; }
         public Dictionary<string, string>? Skins { get; set; }
-        public Dictionary<string, FadeConfig>? Fades { get; set; }
+        public Dictionary<string, bool>? Fades { get; set; }
         public Dictionary<string, Dictionary<string, string>>? Marbles { get; set; }
         public Dictionary<string, string>? Doppler { get; set; }
         public Dictionary<string, string>? Kimonos { get; set; }

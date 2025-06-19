@@ -1,113 +1,32 @@
 {
    "fades":{
-      "AWP": [
-         80,
-         true
-      ],
-      "Bayonet":[
-         80,
-         false
-      ],
-      "Bowie Knife":[
-         80,
-         false
-      ],
-      "Butterfly Knife":[
-         80,
-         false
-      ],
-      "Classic Knife":[
-         80,
-         false
-      ],
-      "Falchion Knife":[
-         80,
-         false
-      ],
-      "Flip Knife":[
-         80,
-         false
-      ],
-      "Glock-18": [
-         80,
-         false
-      ],
-      "Gut Knife":[
-         80,
-         false
-      ],
-      "Huntsman Knife":[
-         80,
-         false
-      ],
-      "Karambit":[
-         80,
-         true
-      ],
-      "Kukri Knife":[
-         80,
-         false
-      ],
-      "M4A1-S":[
-         80,
-         false
-      ],
-      "M9 Bayonet":[
-         80,
-         false
-      ],
-      "MAC-10":[
-         80,
-         false
-      ],
-      "MP7":[
-         80,
-         true
-      ],
-      "Navaja Knife":[
-         80,
-         false
-      ],
-      "Nomad Knife":[
-         80,
-         false
-      ],
-      "Paracord Knife":[
-         80,
-         false
-      ],
-      "R8 Revolver":[
-         80,
-         false
-      ],
-      "Shadow Daggers":[
-         80,
-         false
-      ],
-      "Skeleton Knife":[
-         80,
-         false
-      ],
-      "Stiletto Knife":[
-         80,
-         false
-      ],
-      "Survival Knife":[
-         80,
-         false
-      ],
-      "Talon Knife":[
-         80,
-         true
-      ],
-      "UMP-45":[
-         80,
-         false
-      ],
-      "Ursus Knife":[
-         80,
-         false
-      ]
+      "AWP": true,
+      "Bayonet":false,
+      "Bowie Knife":false,
+      "Butterfly Knife":false,
+      "Classic Knife":false,
+      "Falchion Knife":false,
+      "Flip Knife":false,
+      "Glock-18": false,
+      "Gut Knife":false,
+      "Huntsman Knife":false,
+      "Karambit":true,
+      "Kukri Knife":false,
+      "M4A1-S":false,
+      "M9 Bayonet":false,
+      "MAC-10":false,
+      "MP7":true,
+      "Navaja Knife":false,
+      "Nomad Knife":false,
+      "Paracord Knife":false,
+      "R8 Revolver":false,
+      "Shadow Daggers":false,
+      "Skeleton Knife":false,
+      "Stiletto Knife":false,
+      "Survival Knife":false,
+      "Talon Knife":true,
+      "UMP-45":false,
+      "Ursus Knife":false
    },
    "fade_order":[
       146,
