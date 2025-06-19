@@ -804,17 +804,14 @@ namespace CSGOSkinAPI.Services
                 var orderReversed = _constData.Fades[weaponType];
                 const int minimumFadePercent = 80;
 
-                var fadeIndex = _constData.FadeOrder != null ? Array.IndexOf(_constData.FadeOrder, paintseed) : -1;
-                if (fadeIndex >= 0)
+                var fadeIndex = _constData.FadeOrder![paintseed];
+                if (orderReversed)
                 {
-                    if (orderReversed)
-                    {
-                        fadeIndex = 1000 - fadeIndex;
-                    }
-                    var actualFadePercent = (double)fadeIndex / 1001;
-                    var scaledFadePercent = Math.Round(minimumFadePercent + actualFadePercent * (100 - minimumFadePercent), 1);
-                    special = scaledFadePercent + "%";
+                    fadeIndex = 1000 - fadeIndex;
                 }
+                var actualFadePercent = (double)fadeIndex / 1001;
+                var scaledFadePercent = Math.Round(minimumFadePercent + actualFadePercent * (100 - minimumFadePercent), 1);
+                special = scaledFadePercent + "%";
             }
             else if ((pattern == "Doppler" || pattern == "Gamma Doppler") && _constData.Doppler?.ContainsKey(paintindex.ToString()) == true)
             {
