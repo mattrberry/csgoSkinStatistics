@@ -798,17 +798,11 @@ namespace CSGOSkinAPI.Services
             }
             else if (pattern == "Fade" && _constData.Fades?.ContainsKey(weaponType) == true)
             {
-                var orderReversed = _constData.Fades[weaponType];
-                const int minimumFadePercent = 80;
-
-                var fadeIndex = _constData.FadeOrder![paintseed];
-                if (orderReversed)
-                {
-                    fadeIndex = 1000 - fadeIndex;
-                }
-                var actualFadePercent = (double)fadeIndex / 1001;
-                var scaledFadePercent = Math.Round(minimumFadePercent + actualFadePercent * (100 - minimumFadePercent), 1);
-                special = scaledFadePercent + "%";
+                special = GetFadePercent(paintseed, _constData.Fades[weaponType]) + "%";
+            }
+            else if (pattern == "Amber Fade" && _constData.AmberFades?.ContainsKey(weaponType) == true)
+            {
+                special = GetFadePercent(paintseed, _constData.AmberFades[weaponType]) + "%";
             }
             else if ((pattern == "Doppler" || pattern == "Gamma Doppler") && _constData.Doppler?.ContainsKey(paintindex.ToString()) == true)
             {
@@ -820,6 +814,19 @@ namespace CSGOSkinAPI.Services
             }
 
             item.Special = special;
+        }
+
+        private double GetFadePercent(int paintseed, bool reversed)
+        {
+            const int minimumFadePercent = 80;
+            var fadeIndex = _constData.FadeOrder![paintseed];
+            if (reversed)
+            {
+                fadeIndex = 1000 - fadeIndex;
+            }
+            var actualFadePercent = (double)fadeIndex / 1001;
+            var scaledFadePercent = Math.Round(minimumFadePercent + actualFadePercent * (100 - minimumFadePercent), 1);
+            return scaledFadePercent;
         }
 
         private string GetWeaponName(int defIndex)
@@ -862,6 +869,7 @@ namespace CSGOSkinAPI.Models
         public Dictionary<string, string>? Items { get; set; }
         public Dictionary<string, string>? Skins { get; set; }
         public Dictionary<string, bool>? Fades { get; set; }
+        public Dictionary<string, bool>? AmberFades { get; set; }
         [JsonPropertyName("fade_order")]
         public int[]? FadeOrder { get; set; }
         public string[]? Fireice { get; set; }
