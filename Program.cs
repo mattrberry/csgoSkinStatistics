@@ -792,12 +792,9 @@ namespace CSGOSkinAPI.Services
 
             var special = "";
 
-            if (pattern == "Marble Fade" && _constData.Marbles?.ContainsKey(weaponType) == true)
+            if (pattern == "Marble Fade" && _constData.Fireice?.Contains(weaponType) == true)
             {
-                if (_constData.Marbles[weaponType].TryGetValue(paintseed.ToString(), out var marbleType))
-                {
-                    special = marbleType;
-                }
+                special = ConstData.FireIceNames[_constData.FireiceOrder![paintseed]];
             }
             else if (pattern == "Fade" && _constData.Fades?.ContainsKey(weaponType) == true)
             {
@@ -865,12 +862,16 @@ namespace CSGOSkinAPI.Models
         public Dictionary<string, string>? Items { get; set; }
         public Dictionary<string, string>? Skins { get; set; }
         public Dictionary<string, bool>? Fades { get; set; }
-        public Dictionary<string, Dictionary<string, string>>? Marbles { get; set; }
+        [JsonPropertyName("fade_order")]
+        public int[]? FadeOrder { get; set; }
+        public string[]? Fireice { get; set; }
+        [JsonPropertyName("fireice_order")]
+        public int[]? FireiceOrder { get; set; }
         public Dictionary<string, string>? Doppler { get; set; }
         public Dictionary<string, string>? Kimonos { get; set; }
 
-        [JsonPropertyName("fade_order")]
-        public int[]? FadeOrder { get; set; }
+        public static readonly string[] FireIceNames = ["", "1st Max", "2nd Max", "3rd Max", "4th Max", "5th Max", "6th Max", "7th Max", "8th Max", "9th Max", "10th Max", "FFI"];
+
     }
 
     public class ItemInfo
