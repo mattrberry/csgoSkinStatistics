@@ -16,12 +16,21 @@ using ProtoBuf;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
+builder.Services.AddResponseCompression(options =>
+{
+    options.EnableForHttps = true;
+    options.Providers.Add<Microsoft.AspNetCore.ResponseCompression.GzipCompressionProvider>();
+    options.Providers.Add<Microsoft.AspNetCore.ResponseCompression.BrotliCompressionProvider>();
+    options.MimeTypes = Microsoft.AspNetCore.ResponseCompression.ResponseCompressionDefaults.MimeTypes.Concat(
+        ["application/javascript", "text/css", "text/html", "text/json", "text/plain"]);
+});
 builder.Services.AddSingleton<SteamService>();
 builder.Services.AddSingleton<DatabaseService>();
 builder.Services.AddSingleton<ConstDataService>();
 
 var app = builder.Build();
 
+app.UseResponseCompression();
 app.UseDefaultFiles(); // Must be before UseStaticFiles
 app.UseStaticFiles();
 
