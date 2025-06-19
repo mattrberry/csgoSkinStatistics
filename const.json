@@ -1,25 +1,4 @@
 {
-   "knives":[
-      "Stiletto Knife",
-      "Talon Knife",
-      "Classic Knife",
-      "Ursus Knife",
-      "Survival Knife",
-      "Gut Knife",
-      "Karambit",
-      "Falchion Knife",
-      "Huntsman Knife",
-      "Bayonet",
-      "Nomad Knife",
-      "Skeleton Knife",
-      "Shadow Daggers",
-      "Bowie Knife",
-      "Butterfly Knife",
-      "M9 Bayonet",
-      "Navaja Knife",
-      "Paracord Knife",
-      "Flip Knife"
-   ],
    "fades":{
       "Bayonet":[
          80,
