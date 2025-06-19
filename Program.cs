@@ -11,6 +11,7 @@ using System.Text.RegularExpressions;
 using System.Web;
 using CSGOSkinAPI.Services;
 using CSGOSkinAPI.Models;
+using ProtoBuf;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -54,8 +55,10 @@ namespace CSGOSkinAPI.Controllers
     [Route("api")]
     public partial class SkinController(SteamService steamService, DatabaseService dbService, ConstDataService constDataService) : ControllerBase
     {
-        [GeneratedRegex(@"([SM])(\d+)A(\d+)D(\d+)", RegexOptions.Compiled)]
+        [GeneratedRegex(@"steam://rungame/730/76561202255233023/ csgo_econ_action_preview ([SM])(\d+)A(\d+)D(\d+)", RegexOptions.Compiled)]
         private static partial Regex InspectUrlRegex();
+        [GeneratedRegex(@"steam://rungame/730/76561202255233023/ csgo_econ_action_preview ([0-9A-F]+)", RegexOptions.Compiled)]
+        private static partial Regex InspectUrlHexRegex();
 
         [HttpGet]
         public async Task<IActionResult> GetSkinData([FromQuery] string? url,
@@ -73,7 +76,13 @@ namespace CSGOSkinAPI.Controllers
                         return BadRequest(new { error = "Invalid inspect URL format" });
                     }
 
-                    (s, a, d, m) = parsed.Value;
+                    (s, a, d, m, var directItem) = parsed.Value;
+
+                    if (directItem != null)
+                    {
+                        constDataService.FinalizeAttributes(directItem);
+                        return Ok(CreateResponse(directItem, s, a, d, m));
+                    }
                 }
 
                 var existingItem = await dbService.GetItemAsync(a);
@@ -101,14 +110,23 @@ namespace CSGOSkinAPI.Controllers
             }
         }
 
-        private static (ulong s, ulong a, ulong d, ulong m)? ParseInspectUrl(string url)
+        private static (ulong s, ulong a, ulong d, ulong m, ItemInfo? directItem)? ParseInspectUrl(string url)
         {
             var decodedUrl = HttpUtility.UrlDecode(url);
             var match = InspectUrlRegex().Match(decodedUrl);
             if (!match.Success)
             {
-                Console.WriteLine($"Failed to decode URL: {url}");
-                return null;
+                var hexMatch = InspectUrlHexRegex().Match(decodedUrl);
+                if (!hexMatch.Success)
+                {
+                    Console.WriteLine($"Failed to decode URL: {url}");
+                    return null;
+                }
+                // Read the bytes, dropping the leading null byte and the trailing 4 checksum bytes
+                var hexBytes = Convert.FromHexString(hexMatch.Groups[1].Value)[1..^4];
+                var itemInfoProto = Serializer.Deserialize<CEconItemPreviewDataBlock>(new MemoryStream(hexBytes));
+                var itemInfo = SteamService.CreateItemInfoFromPreviewData(itemInfoProto);
+                return (0, itemInfo.ItemId, 0, 0, itemInfo);
             }
 
             ulong s = 0, a, d, m = 0;
@@ -124,8 +142,9 @@ namespace CSGOSkinAPI.Controllers
             }
             a = ulong.Parse(match.Groups[3].Value);
             d = ulong.Parse(match.Groups[4].Value);
-            return (s, a, d, m);
+            return (s, a, d, m, null);
         }
+
 
         private static object CreateResponse(ItemInfo item, ulong s, ulong a, ulong d, ulong m)
         {
@@ -189,6 +208,24 @@ namespace CSGOSkinAPI.Services
         private bool _isRunning = false;
         private readonly ConcurrentDictionary<ulong, List<TaskCompletionSource<ItemInfo?>>> _pendingRequests = new();
         private int _currentAccountIndex = 0;
+
+        public static ItemInfo CreateItemInfoFromPreviewData(CEconItemPreviewDataBlock itemInfoProto)
+        {
+            var paintwear = BitConverter.ToSingle(BitConverter.GetBytes(itemInfoProto.paintwear), 0);
+            return new ItemInfo
+            {
+                ItemId = itemInfoProto.itemid,
+                DefIndex = (int)itemInfoProto.defindex,
+                PaintIndex = (int)itemInfoProto.paintindex,
+                Rarity = (int)itemInfoProto.rarity,
+                Quality = (int)itemInfoProto.quality,
+                PaintWear = paintwear,
+                PaintSeed = (int)itemInfoProto.paintseed,
+                Inventory = (long)itemInfoProto.inventory,
+                Origin = (int)itemInfoProto.origin,
+                StatTrak = itemInfoProto.ShouldSerializekilleatervalue()
+            };
+        }
 
         public SteamService()
         {
@@ -583,21 +620,7 @@ namespace CSGOSkinAPI.Services
                     ItemInfo? item = null;
                     if (response.Body.iteminfo != null)
                     {
-                        var itemInfo = response.Body.iteminfo;
-                        var paintwear = BitConverter.ToSingle(BitConverter.GetBytes(itemInfo.paintwear), 0);
-                        item = new ItemInfo
-                        {
-                            ItemId = itemInfo.itemid,
-                            DefIndex = (int)itemInfo.defindex,
-                            PaintIndex = (int)itemInfo.paintindex,
-                            Rarity = (int)itemInfo.rarity,
-                            Quality = (int)itemInfo.quality,
-                            PaintWear = paintwear,
-                            PaintSeed = (int)itemInfo.paintseed,
-                            Inventory = (long)itemInfo.inventory,
-                            Origin = (int)itemInfo.origin,
-                            StatTrak = itemInfo.ShouldSerializekilleatervalue()
-                        };
+                        item = CreateItemInfoFromPreviewData(response.Body.iteminfo);
                     }
                     else
                     {

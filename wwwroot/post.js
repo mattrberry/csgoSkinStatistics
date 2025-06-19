@@ -1,4 +1,6 @@
 let elements;
+const inspectPrefix =
+  "steam://rungame/730/76561202255233023/+csgo_econ_action_preview%20";
 
 function getWearFromFloat(floatValue) {
   const float = parseFloat(floatValue);
@@ -18,19 +20,19 @@ function getRarityFromNumber(rarityNumber) {
     "Restricted",
     "Classified",
     "Covert",
-    "Contraband"
+    "Contraband",
   ];
   return rarities[rarityNumber] || "Unknown";
 }
 
-function display(iteminfo, loadTime) {
+function display(iteminfo, url, loadTime) {
   stopLoading();
-  
+
   if (iteminfo.error) {
     handleError(iteminfo.error);
     return;
   }
-  
+
   try {
     elements.itemName.innerHTML = `${iteminfo.weapon} | ${iteminfo.skin} <span class="pop">${iteminfo.special}</span>`;
     elements.itemName.classList.remove("knife", "souvenir");
@@ -43,23 +45,21 @@ function display(iteminfo, loadTime) {
     elements.itemPaintwear.innerHTML = iteminfo.paintwear;
     elements.itemWear.innerHTML = getWearFromFloat(iteminfo.paintwear);
     elements.itemRarity.innerHTML = getRarityFromNumber(iteminfo.rarity);
-    elements.itemItemid.innerHTML = iteminfo.itemid;
+    if (iteminfo.itemid == 0) {
+      elements.itemItemid.innerHTML = "Unknown";
+    } else {
+      elements.itemItemid.innerHTML = iteminfo.itemid;
+    }
     elements.itemPaintseed.innerHTML = iteminfo.paintseed;
     elements.status.innerHTML = `Loaded in ${loadTime} seconds`;
     elements.stattrakIndicator.classList.remove("yes");
     if (iteminfo.stattrak) {
       elements.stattrakIndicator.classList.add("yes");
     }
-
-    if (iteminfo.s && iteminfo.s !== 0) {
-      elements.inspectButton.href = `steam://rungame/730/76561202255233023/+csgo_econ_action_preview%20S${iteminfo.s}A${iteminfo.a}D${iteminfo.d}`;
-    } else if (iteminfo.m && iteminfo.m !== 0) {
-      elements.inspectButton.href = `steam://rungame/730/76561202255233023/+csgo_econ_action_preview%20M${iteminfo.m}A${iteminfo.a}D${iteminfo.d}`;
-    } else {
-      elements.inspectButton.href = "#";
-    }
+    elements.inspectButton.href = url;
   } catch (e) {
     handleError("An error occurred while displaying the item data");
+    throw e;
   }
 }
 
@@ -128,23 +128,13 @@ window.addEventListener("load", function () {
     element.target.blur();
 
     const input = elements.textbox.value;
-    try {
-      const [match, type, paramType, paramA, paramD] = input.match(
-        /([SM])(\d+)A(\d+)D(\d+)$/
-      );
-      const requestData = {
-        s: type === "S" ? paramType : "0",
-        m: type === "S" ? "0" : paramType,
-        a: paramA,
-        d: paramD,
-      };
-
-      elements.textbox.value = match;
-      window.location.hash = match;
-
+    const reduced = input.replace(inspectPrefix, "");
+    if (/^[SM]\d+A\d+D\d+$/.test(reduced) || /^[0-9A-F]+$/.test(reduced)) {
+      elements.textbox.value = reduced;
+      window.location.hash = reduced;
       resetFields();
-      post(requestData);
-    } catch (e) {
+      post(inspectPrefix + reduced);
+    } else {
       elements.textbox.value = "Not a valid inspect link";
     }
   });
@@ -153,22 +143,15 @@ window.addEventListener("load", function () {
     const hashURL = window.location.hash.substring(1);
     elements.textbox.value = hashURL;
     elements.button.click();
-  } else {
-    post({
-      s: "76561198261551396",
-      m: "0",
-      a: "19621162652",
-      d: "13871278417611896371",
-    });
   }
 });
 
-function post(requestData) {
+function post(url) {
   startLoading();
   const start = performance.now();
-  fetch(`/api?${new URLSearchParams(requestData)}`)
+  fetch(`/api?${new URLSearchParams({url})}`)
     .then((response) => response.json())
     .then((iteminfo) =>
-      display(iteminfo, ((performance.now() - start) / 1000).toFixed(2))
+      display(iteminfo, url, ((performance.now() - start) / 1000).toFixed(2))
     );
 }
