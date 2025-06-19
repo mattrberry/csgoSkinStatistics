@@ -256,6 +256,10 @@ input[type="text"]:not(:hover):not(:focus) {
 }
 
 @media (max-width: 608px) {
+  #container {
+    padding-top: 50px;
+  }
+
   input[type="text"] {
     width: 100vw;
     font-size: 12px;
