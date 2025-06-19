@@ -1,34 +1,10 @@
 {
    "fades":{
-      "Bayonet":[
-         80,
-         false
-      ],
-      "Classic Knife":[
-         80,
-         false
-      ],
-      "Flip Knife":[
-         80,
-         false
-      ],
-      "Gut Knife":[
-         80,
-         false
-      ],
-      "Karambit":[
+      "AWP": [
          80,
          true
       ],
-      "M9 Bayonet":[
-         80,
-         false
-      ],
-      "Huntsman Knife":[
-         80,
-         false
-      ],
-      "Falchion Knife":[
+      "Bayonet":[
          80,
          false
       ],
@@ -40,21 +16,53 @@
          80,
          false
       ],
-      "Shadow Daggers":[
+      "Classic Knife":[
          80,
          false
       ],
-      "Paracord Knife":[
+      "Falchion Knife":[
          80,
          false
       ],
-      "Survival Knife":[
+      "Flip Knife":[
          80,
          false
       ],
-      "Ursus Knife":[
+      "Glock-18": [
          80,
          false
+      ],
+      "Gut Knife":[
+         80,
+         false
+      ],
+      "Huntsman Knife":[
+         80,
+         false
+      ],
+      "Karambit":[
+         80,
+         true
+      ],
+      "Kukri Knife":[
+         80,
+         false
+      ],
+      "M4A1-S":[
+         80,
+         false
+      ],
+      "M9 Bayonet":[
+         80,
+         false
+      ],
+      "MAC-10":[
+         80,
+         false
+      ],
+      "MP7":[
+         80,
+         true
       ],
       "Navaja Knife":[
          80,
@@ -64,7 +72,27 @@
          80,
          false
       ],
+      "Paracord Knife":[
+         80,
+         false
+      ],
+      "R8 Revolver":[
+         80,
+         false
+      ],
+      "Shadow Daggers":[
+         80,
+         false
+      ],
+      "Skeleton Knife":[
+         80,
+         false
+      ],
       "Stiletto Knife":[
+         80,
+         false
+      ],
+      "Survival Knife":[
          80,
          false
       ],
@@ -72,7 +100,11 @@
          80,
          true
       ],
-      "Skeleton Knife":[
+      "UMP-45":[
+         80,
+         false
+      ],
+      "Ursus Knife":[
          80,
          false
       ]
